@@ -1,5 +1,6 @@
 package cn.zero.spider;
 
+import cn.zero.spider.webmagic.page.BiQuGeIndexPageProcessor;
 import cn.zero.spider.webmagic.pipeline.BiQuGePipeline;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -23,6 +24,10 @@ public class SpiderApplication {
         return new BiQuGePipeline();
     }
 
+    @Bean
+    public BiQuGeIndexPageProcessor biQuGeIndexPageProcessor(){
+        return new BiQuGeIndexPageProcessor();
+    }
     public static void main(String[] args) {
         SpringApplication.run(SpiderApplication.class, args);
     }

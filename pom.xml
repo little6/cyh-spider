@@ -5,10 +5,10 @@
 
     <groupId>cn.zero</groupId>
     <artifactId>spider</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>version1.0</version>
     <packaging>jar</packaging>
 
-    <name>spider</name>
+    <name>cyh-spider</name>
     <description>java小说爬虫</description>
 
     <parent>
@@ -82,6 +82,19 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.47</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/javax.servlet/jstl -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>

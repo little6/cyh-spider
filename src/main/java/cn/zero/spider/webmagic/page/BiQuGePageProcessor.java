@@ -32,7 +32,7 @@ public class BiQuGePageProcessor implements PageProcessor {
             //重试次数
             .setRetryTimes(3)
             //2页处理间隔 单位毫秒
-            .setSleepTime(100)
+            .setSleepTime(500)
             //超时时间
             .setTimeOut(3000)
             .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
@@ -82,7 +82,8 @@ public class BiQuGePageProcessor implements PageProcessor {
         String siteUrl = UrlUtils.getHost(page.getUrl().toString()) + "/";
         logger.info("开始爬取小说详情：" + page.getUrl());
         Book book = new Book();
-        book.setBookUrl(page.getUrl().regex("(\\w+)").toString());
+        //小说详情地址 一级目录
+        book.setBookUrl(page.getUrl().regex(siteUrl+"(\\w+)").toString());
         book.setAuthor(page.getHtml().xpath("//*[@id=\"info\"]/p[1]/text()").toString());
         book.setTitle(page.getHtml().xpath("//*[@id=\"info\"]/h1/text()").toString());
         book.setUpdateTime(page.getHtml().xpath("//*[@id=\"info\"]/p[3]/text()").toString());

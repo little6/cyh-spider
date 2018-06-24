@@ -8,4 +8,7 @@
        #{url},#{bookUrl},#{title},#{content}
        )
     </insert>
+    <select id="getByUrl" resultType="cn.zero.spider.pojo.Article">
+        select * from article where bookUrl=#{bookUrl} and url=#{articleUrl}
+    </select>
 </mapper>

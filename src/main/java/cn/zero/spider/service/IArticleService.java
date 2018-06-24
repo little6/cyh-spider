@@ -7,5 +7,6 @@ import cn.zero.spider.pojo.Article;
  * @date 2018/6/23 22:35
  */
 public interface IArticleService extends IBaseService<Article> {
+    Article getByUrl(String bookUrl, String articleUrl);
 
 }
