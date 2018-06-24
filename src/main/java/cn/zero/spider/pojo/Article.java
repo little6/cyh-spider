@@ -7,9 +7,22 @@ import java.io.Serializable;
  * @date 2018/6/23 19:52
  */
 public class Article implements Serializable {
-    private String bookUrl;
+    /**
+     * 章节目录地址
+     */
     private int url;
+    /**
+     * 小说详情地址
+     */
+
+    private String bookUrl;
+    /**
+     * 章节标题
+     */
     private String title;
+    /**
+     * 内容
+     */
     private String content;
 
     public String getBookUrl() {

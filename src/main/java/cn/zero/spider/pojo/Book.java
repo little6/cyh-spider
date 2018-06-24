@@ -1,23 +1,53 @@
 package cn.zero.spider.pojo;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author 蔡元豪
  * @date 2018/6/23 19:30
  */
+
 public class Book implements Serializable {
 
+    /**
+     * 小说链接
+     */
     private String bookUrl;
+    /**
+     * 作者
+     */
     private String author;
+    /**
+     * 书名
+     */
     private String title;
+    /**
+     * 更新时间
+     */
     private String updateTime;
+    /**
+     * 简介
+     */
     private String intro;
+    /**
+     * 最新文章
+     */
     private String latestChapterTitle;
+    /**
+     * 最新文章链接
+     */
     private String latestChapterUrl;
+    /**
+     * 封面图片链接
+     */
     private String titlePageUrl;
+    /**
+     *
+     */
     private String sourceUrl;
+    /**
+     * 章节页面
+     */
     private String chapterPage;
     public String getBookUrl() {
         return bookUrl;

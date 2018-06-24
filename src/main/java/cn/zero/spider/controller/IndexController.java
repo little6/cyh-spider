@@ -9,9 +9,9 @@ import org.springframework.web.servlet.ModelAndView;
  * @date 2018/6/23 21:55
  */
 @Controller
-public class IndexController {
+public class IndexController extends BaseController {
 
-    @RequestMapping(value = {"index"})
+    @RequestMapping(value = {"","index"})
     public ModelAndView index() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("index");
