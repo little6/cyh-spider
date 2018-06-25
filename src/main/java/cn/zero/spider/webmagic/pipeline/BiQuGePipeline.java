@@ -22,6 +22,7 @@ import us.codecraft.webmagic.pipeline.Pipeline;
 public class BiQuGePipeline implements Pipeline {
 
     private Logger logger = LoggerFactory.getLogger(BiQuGePipeline.class);
+
     @Autowired
     private IBookService bookService;
     @Autowired
@@ -40,7 +41,9 @@ public class BiQuGePipeline implements Pipeline {
         if (book != null) {
             logger.info("保存小说详情--《"+book.getTitle()+"》");
             bookService.save(book);
-        } else if (article != null) {
+        }
+        if (article != null) {
+            logger.info("保存小说章节--《"+article.getTitle()+"》");
             articleService.save(article);
         }
     }

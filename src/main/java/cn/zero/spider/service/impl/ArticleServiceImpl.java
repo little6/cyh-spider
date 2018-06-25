@@ -13,13 +13,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class ArticleServiceImpl extends BaseServiceImpl<Article> implements IArticleService {
 
-
-    private ArticleMapper articleMapper;
-
     @Autowired
-    public void setArticleMapper(ArticleMapper articleMapper) {
-        this.articleMapper = articleMapper;
-    }
+    private ArticleMapper articleMapper;
 
     @Override
     public Article getByUrl(String bookUrl, String articleUrl) {

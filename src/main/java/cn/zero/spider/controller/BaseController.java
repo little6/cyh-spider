@@ -11,7 +11,7 @@ public class BaseController {
 
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
-    public String exceptionHandler(Exception e){
+    public String exceptionHandler(Exception e) {
         return e.getMessage();
     }
 

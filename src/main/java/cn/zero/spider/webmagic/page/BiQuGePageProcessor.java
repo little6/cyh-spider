@@ -16,7 +16,6 @@ import us.codecraft.webmagic.utils.UrlUtils;
  * 笔趣阁爬虫
  * http://www.biquge.com.tw/
  *
- *
  * @author 蔡元豪
  * @date 2018/6/23 15:57
  */
@@ -66,10 +65,10 @@ public class BiQuGePageProcessor implements PageProcessor {
         if (article.getTitle() == null
                 || StringUtils.isBlank(article.getTitle())) {
             page.setSkip(true);
-            logger.info("爬取小说章节失败："+ page.getUrl().toString());
-        }else {
-            page.putField("article",article);
-            logger.info("爬取小说章节:" + article.getTitle() + "----成功--->"+page.getUrl().toString());
+            logger.info("爬取小说章节失败：" + page.getUrl().toString());
+        } else {
+            page.putField("article", article);
+            logger.info("爬取小说章节:" + article.getTitle() + "----成功--->" + page.getUrl().toString());
         }
     }
 
@@ -83,13 +82,18 @@ public class BiQuGePageProcessor implements PageProcessor {
         logger.info("开始爬取小说详情：" + page.getUrl());
         Book book = new Book();
         //小说详情地址 一级目录
-        book.setBookUrl(page.getUrl().regex(siteUrl+"(\\w+)").toString());
+        book.setBookUrl(page.getUrl().regex(siteUrl + "(\\w+)").toString());
         book.setAuthor(page.getHtml().xpath("//*[@id=\"info\"]/p[1]/text()").toString());
         book.setTitle(page.getHtml().xpath("//*[@id=\"info\"]/h1/text()").toString());
-        book.setUpdateTime(page.getHtml().xpath("//*[@id=\"info\"]/p[3]/text()").toString());
+        //设置更新时间
+        book.setUpdateTime(page.getHtml().xpath("//*[@id=\"info\"]/p[3]/text()").replace("最后更新：", "").toString());
+        //设置章节页面
         book.setIntro(page.getHtml().xpath("//*[@id=\"intro\"]/p/text()").toString());
+        //设置最新章节
         book.setLatestChapterTitle(page.getHtml().xpath("//*[@id=\"info\"]/p[4]/a/text()").toString());
+        //最新章节地址
         book.setLatestChapterUrl(page.getHtml().xpath("//*[@id=\"info\"]/p[4]/a/@href").regex("(\\w+)\\.html").toString());
+        //封面链接
         book.setTitlePageUrl(page.getHtml().xpath("//*[@id=\"fmimg\"]/img/@src").toString());
         book.setSourceUrl(siteUrl);
         book.setChapterPage(page.getHtml().xpath("//*[@id=\"list\"]/dl")
@@ -111,8 +115,6 @@ public class BiQuGePageProcessor implements PageProcessor {
     }
 
     public static void main(String[] args) {
-        Spider.create(new BiQuGePageProcessor())
-                .addUrl("http://www.biquge.com.tw/16_16209/")
-                .thread(5).run();
+        Spider.create(new BiQuGePageProcessor()).test("http://www.biquge.com.tw/8_8568/");
     }
 }

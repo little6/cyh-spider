@@ -1,5 +1,6 @@
 package cn.zero.spider.controller;
 
+import cn.zero.spider.pojo.Article;
 import cn.zero.spider.pojo.Book;
 import cn.zero.spider.service.IArticleService;
 import cn.zero.spider.service.IBookService;
@@ -8,6 +9,7 @@ import cn.zero.spider.webmagic.pipeline.BiQuGePipeline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
@@ -28,53 +30,18 @@ public class BookController extends BaseController {
 
     private Logger logger = LoggerFactory.getLogger(BookController.class);
 
+    @Autowired
     private IBookService bookService;
 
-    /**
-     * Sets book service.
-     *
-     * @param bookService the book service
-     */
     @Autowired
-    public void setBookService(IBookService bookService) {
-        this.bookService = bookService;
-    }
-
     private IArticleService articleService;
 
-    /**
-     * Sets article service.
-     *
-     * @param articleService the article service
-     */
     @Autowired
-    public void setArticleService(IArticleService articleService) {
-        this.articleService = articleService;
-    }
-
     private StringRedisTemplate stringRedisTemplate;
 
-    /**
-     * Sets string redis template.
-     *
-     * @param stringRedisTemplate the string redis template
-     */
     @Autowired
-    public void setStringRedisTemplate(StringRedisTemplate stringRedisTemplate) {
-        this.stringRedisTemplate = stringRedisTemplate;
-    }
-
     private BiQuGePipeline biQuGePipeline;
 
-    /**
-     * Sets bi qu ge pipeline.
-     *
-     * @param biQuGePipeline the bi qu ge pipeline
-     */
-    @Autowired
-    public void setBiQuGePipeline(BiQuGePipeline biQuGePipeline) {
-        this.biQuGePipeline = biQuGePipeline;
-    }
 
     /**
      * 小说详情页面
@@ -101,10 +68,6 @@ public class BookController extends BaseController {
             modelAndView.setViewName("book/info");
         }
 
-//        SetOperations<String, String> removeBookUrl = stringRedisTemplate.opsForSet();
-        //移出已经爬取的小说详情页面 重新爬取
-//        removeBookUrl.remove("set_www.biquge.com.tw", "http://www.biquge.com.tw/" + bookUrl);
-
         return modelAndView;
     }
 
@@ -118,7 +81,18 @@ public class BookController extends BaseController {
     @RequestMapping(value = "/{bookUrl}/{articleUrl}.html")
     public ModelAndView getArticle(@PathVariable("bookUrl") String bookUrl, @PathVariable("articleUrl") String articleUrl) {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("article", articleService.getByUrl(bookUrl, articleUrl));
+        Article article = articleService.getByUrl(bookUrl, articleUrl);
+        if (article == null) {
+            SetOperations<String, String> removeBookUrl = stringRedisTemplate.opsForSet();
+            //移出已经爬取的小说章节记录
+            removeBookUrl.remove("set_www.biquge.com.tw", "http://www.biquge.com.tw/" + bookUrl+"/"+articleUrl+".html");
+            Spider.create(new BiQuGePageProcessor()).addUrl("http://www.biquge.com.tw/" + bookUrl + "/" + articleUrl+".html").addPipeline(biQuGePipeline)
+                    .setScheduler(new RedisScheduler("127.0.0.1"))
+            .thread(1).run();
+            modelAndView.addObject("article", articleService.getByUrl(bookUrl, articleUrl));
+        }else {
+            modelAndView.addObject("article", article);
+        }
         modelAndView.setViewName("book/article");
         return modelAndView;
     }
