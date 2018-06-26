@@ -8,9 +8,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>更新中</title>
+    <title>小说更新中</title>
 </head>
 <body>
-小说更新中!请3s后刷新重试
+小说更新中!请3s后刷新重试！
 </body>
 </html>

@@ -42,13 +42,25 @@ public class Book implements Serializable {
      */
     private String titlePageUrl;
     /**
-     *
+     * 来源地址
      */
     private String sourceUrl;
     /**
      * 章节页面
      */
     private String chapterPage;
+
+    /**
+     * 小说状态
+     */
+    private String status;
+
+    /**
+     * 字数
+     */
+    private String wordCount;
+
+
     public String getBookUrl() {
         return bookUrl;
     }
@@ -130,6 +142,22 @@ public class Book implements Serializable {
         this.chapterPage = chapterPage;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getWordCount() {
+        return wordCount;
+    }
+
+    public void setWordCount(String wordCount) {
+        this.wordCount = wordCount;
+    }
+
     @Override
     public String toString() {
         return "Book{" +
@@ -143,6 +171,8 @@ public class Book implements Serializable {
                 ", titlePageUrl='" + titlePageUrl + '\'' +
                 ", sourceUrl='" + sourceUrl + '\'' +
                 ", chapterPage='" + chapterPage + '\'' +
+                ", status='" + status + '\'' +
+                ", wordCount='" + wordCount + '\'' +
                 '}';
     }
 }

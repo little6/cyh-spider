@@ -22,20 +22,19 @@ import java.util.List;
 @Controller
 public class IndexController extends BaseController {
 
+
+    @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
-    public void setStringRedisTemplate(StringRedisTemplate stringRedisTemplate) {
-        this.stringRedisTemplate = stringRedisTemplate;
-    }
-
     private BiQuGeIndexPageProcessor biQuGeIndexPageProcessor;
 
-    @Autowired
-    public void setBiQuGeIndexPageProcessor(BiQuGeIndexPageProcessor biQuGeIndexPageProcessor) {
-        this.biQuGeIndexPageProcessor = biQuGeIndexPageProcessor;
-    }
 
+    /**
+     * 首页
+     *
+     * @return
+     */
     @RequestMapping(value = {"", "index"})
     public ModelAndView index() {
         ModelAndView modelAndView = new ModelAndView();
@@ -50,6 +49,8 @@ public class IndexController extends BaseController {
     @RequestMapping("/pa")
     public ModelAndView spiderIndex() {
         ModelAndView modelAndView = new ModelAndView();
+
+        stringRedisTemplate.delete("novelsList");
         Spider.create(biQuGeIndexPageProcessor)
                 .addUrl("http://www.biquge.com.tw/")
                 .setScheduler(new RedisScheduler("127.0.0.1"))

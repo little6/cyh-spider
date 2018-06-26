@@ -1,26 +1,27 @@
 package cn.zero.spider.controller;
 
-import cn.zero.spider.pojo.Article;
 import cn.zero.spider.pojo.Book;
-import cn.zero.spider.service.IArticleService;
 import cn.zero.spider.service.IBookService;
 import cn.zero.spider.webmagic.page.BiQuGePageProcessor;
+import cn.zero.spider.webmagic.page.BiQuGeSearchPageProcessor;
 import cn.zero.spider.webmagic.pipeline.BiQuGePipeline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.BoundHashOperations;
-import org.springframework.data.redis.core.SetOperations;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.scheduler.RedisScheduler;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 /**
- * The type Book controller.
+ * 小说控制器
  *
  * @author 蔡元豪
  * @date 2018 /6/24 08:57
@@ -33,12 +34,9 @@ public class BookController extends BaseController {
     @Autowired
     private IBookService bookService;
 
-    @Autowired
-    private IArticleService articleService;
-
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
-
+    /**
+     * 小说详情和章节保存组件
+     */
     @Autowired
     private BiQuGePipeline biQuGePipeline;
 
@@ -50,7 +48,7 @@ public class BookController extends BaseController {
      * @return book book
      */
     @RequestMapping(value = "/{bookUrl}")
-    public ModelAndView getBook(@PathVariable("bookUrl") String bookUrl) {
+    public ModelAndView book(@PathVariable("bookUrl") String bookUrl) {
 
         ModelAndView modelAndView = new ModelAndView();
         Book book = bookService.getById(bookUrl);
@@ -72,28 +70,34 @@ public class BookController extends BaseController {
     }
 
     /**
-     * 小说章节内容页面
+     * 查询小说
      *
-     * @param bookUrl    小说url
-     * @param articleUrl 章节url
-     * @return article
+     * @param key  查询关键字
+     * @param page 分页
+     * @return m
      */
-    @RequestMapping(value = "/{bookUrl}/{articleUrl}.html")
-    public ModelAndView getArticle(@PathVariable("bookUrl") String bookUrl, @PathVariable("articleUrl") String articleUrl) {
+    @RequestMapping(value = "/search")
+    public ModelAndView search(@RequestParam(value = "key") String key,
+                               @RequestParam(value = "page", required = false) Integer page) {
         ModelAndView modelAndView = new ModelAndView();
-        Article article = articleService.getByUrl(bookUrl, articleUrl);
-        if (article == null) {
-            SetOperations<String, String> removeBookUrl = stringRedisTemplate.opsForSet();
-            //移出已经爬取的小说章节记录
-            removeBookUrl.remove("set_www.biquge.com.tw", "http://www.biquge.com.tw/" + bookUrl+"/"+articleUrl+".html");
-            Spider.create(new BiQuGePageProcessor()).addUrl("http://www.biquge.com.tw/" + bookUrl + "/" + articleUrl+".html").addPipeline(biQuGePipeline)
-                    .setScheduler(new RedisScheduler("127.0.0.1"))
-            .thread(1).run();
-            modelAndView.addObject("article", articleService.getByUrl(bookUrl, articleUrl));
-        }else {
-            modelAndView.addObject("article", article);
+        ResultItems resultItems = null;
+        try {
+            String encodeKey = URLEncoder.encode(key, "gb2312");
+            System.out.println(encodeKey);
+            resultItems = Spider.create(new BiQuGeSearchPageProcessor())
+                    .get("http://www.biquge.com.tw/modules/article/soshu.php?searchkey=+"
+                            + encodeKey+(page==null?"":"&page="+page));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
-        modelAndView.setViewName("book/article");
+        if (resultItems != null) {
+            resultItems.getAll().forEach(modelAndView::addObject);
+        }
+        modelAndView.addObject("key", key);
+        if (page != null) {
+            modelAndView.addObject("page", page);
+        }
+        modelAndView.setViewName("book/result");
         return modelAndView;
     }
 

@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 笔趣阁首页爬虫
+ *
  * @author 蔡元豪
  * @date 2018/6/24 13:55
  */
@@ -60,7 +62,7 @@ public class BiQuGeIndexPageProcessor implements PageProcessor {
                 novelsList.setType(content.xpath("//*h2/text()").toString());
                 //分类置顶
                 Book top = new Book();
-                top.setBookUrl(content.xpath("//*div/dl/dt/a/@href").regex(siteUrl+"(\\w+)").toString());
+                top.setBookUrl(content.xpath("//*div/dl/dt/a/@href").regex(siteUrl + "(\\w+)").toString());
                 //小说名
                 top.setTitle(content.xpath("//*div/dl/dt/a/text()").toString());
                 //小说简介
@@ -70,10 +72,10 @@ public class BiQuGeIndexPageProcessor implements PageProcessor {
                 novelsList.setTop(top);
                 List<Book> list = new ArrayList<>();
                 //栏目文章信息
-                for (Selectable li:
-                     content.xpath("//*ul/li").nodes()) {
-                    Book book=new Book();
-                    book.setBookUrl(li.xpath("//*a/@href").regex(siteUrl+"(\\w+)").toString());
+                for (Selectable li :
+                        content.xpath("//*ul/li").nodes()) {
+                    Book book = new Book();
+                    book.setBookUrl(li.xpath("//*a/@href").regex(siteUrl + "(\\w+)").toString());
                     book.setTitle(li.xpath("//*a/text()").toString());
                     book.setAuthor(li.xpath("//*li/text()").regex("/(.*)").toString());
                     System.out.println(book.toString());
@@ -81,7 +83,7 @@ public class BiQuGeIndexPageProcessor implements PageProcessor {
                 }
                 novelsList.setBooks(list);
                 BoundHashOperations<String, String, String> boundHashOperations = stringRedisTemplate.boundHashOps("novelsList");
-                boundHashOperations.put(novelsList.getType(),JSON.toJSONString(novelsList));
+                boundHashOperations.put(novelsList.getType(), JSON.toJSONString(novelsList));
 
             }
         }
