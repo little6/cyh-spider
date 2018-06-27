@@ -11,4 +11,10 @@
     <select id="getByUrl" resultType="cn.zero.spider.pojo.Article">
         select * from article where bookUrl=#{bookUrl} and url=#{articleUrl}
     </select>
+    <select id="getNext" resultType="cn.zero.spider.pojo.Article">
+        select bookUrl,url from article where bookUrl=#{bookUrl} and url > #{articleUrl} order by url limit 0,1
+    </select>
+    <select id="getPrevious" resultType="cn.zero.spider.pojo.Article">
+        select bookUrl,url from article where bookUrl=#{bookUrl} and url &lt; #{articleUrl} order by url limit 0,1
+    </select>
 </mapper>

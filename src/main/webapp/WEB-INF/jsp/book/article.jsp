@@ -13,25 +13,42 @@
         article {
             font-size: 20px;
             line-height: 32px;
-            width: 100%;
+            width: 80%;
             overflow: hidden;
             text-align: left;
-            padding: 10px 0 15px 0;
+            padding: 10px 10% 15px 10%;
+            border: 1px solid burlywood;
+            background-color: burlywood;
         }
 
         header {
             display: block;
             width: 100%;
         }
+
         .content {
             display: block;
-            margin-left: 30%;
-            margin-right: 30%;
+            margin-left: 20%;
+            margin-right: 20%;
         }
         h1 {
             display: block;
             margin: 0 auto;
             text-align: center;
+        }
+        .chapterNav{
+            display: block;
+            text-align: center;
+        }
+        .chapterNav a{
+            font-size: 2em;
+            display: inline-block;
+            text-decoration-line: none;
+            margin: 0 10%;
+            color: #32291d;
+        }
+        body{
+            background-color: #ecc896;
         }
     </style>
 </head>
@@ -41,9 +58,20 @@
 </header>
 
 <div class="content">
+    <div class="chapterNav">
+        <a href="${pageContext.request.contextPath}/${previous}">上一章</a>
+        <a href="${pageContext.request.contextPath}/${article.bookUrl}">章节目录</a>
+        <a href="${pageContext.request.contextPath}/${next}">下一章</a>
+    </div>
+
     <article>
         ${article.content}
     </article>
+    <div class="chapterNav">
+        <a href="${pageContext.request.contextPath}/${previous}">上一章</a>
+        <a href="${pageContext.request.contextPath}/${article.bookUrl}">章节目录</a>
+        <a href="${pageContext.request.contextPath}/${next}">下一章</a>
+    </div>
 </div>
 </dl>
 

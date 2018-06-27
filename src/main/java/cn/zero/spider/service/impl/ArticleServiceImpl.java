@@ -20,4 +20,14 @@ public class ArticleServiceImpl extends BaseServiceImpl<Article> implements IArt
     public Article getByUrl(String bookUrl, String articleUrl) {
         return articleMapper.getByUrl(bookUrl, articleUrl);
     }
+
+    @Override
+    public Article getNext(String bookUrl, String articleUrl) {
+        return articleMapper.getNext(bookUrl,articleUrl);
+    }
+
+    @Override
+    public Article getPrevious(String bookUrl, String articleUrl) {
+        return articleMapper.getPrevious(bookUrl,articleUrl);
+    }
 }

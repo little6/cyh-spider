@@ -39,11 +39,11 @@ public class BiQuGePipeline implements Pipeline {
         Book book = resultItems.get("book");
         Article article = resultItems.get("article");
         if (book != null) {
-            logger.info("保存小说详情--《"+book.getTitle()+"》");
+            logger.info("保存小说详情--《" + book.getTitle() + "》");
             bookService.save(book);
         }
         if (article != null) {
-            logger.info("保存小说章节--《"+article.getTitle()+"》");
+            logger.info("保存小说章节--《" + article.getTitle() + "》");
             articleService.save(article);
         }
     }

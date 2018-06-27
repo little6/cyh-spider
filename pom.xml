@@ -6,7 +6,7 @@
     <groupId>cn.zero</groupId>
     <artifactId>spider</artifactId>
     <version>version1.0</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>cyh-spider</name>
     <description>java小说爬虫</description>
@@ -35,7 +35,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -125,6 +129,18 @@
                 <directory>src/main/java</directory>
                 <includes>
                     <include>**/*.xml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/**</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/webapp</directory>
+                <includes>
+                    <include>**/**</include>
                 </includes>
             </resource>
         </resources>

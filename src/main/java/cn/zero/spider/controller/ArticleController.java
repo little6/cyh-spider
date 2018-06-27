@@ -51,14 +51,22 @@ public class ArticleController extends BaseController {
         if (article == null) {
             SetOperations<String, String> removeBookUrl = stringRedisTemplate.opsForSet();
             //移出已经爬取的小说章节记录
-            logger.info("移出redis爬取章节记录："+"http://www.biquge.com.tw/" + bookUrl + "/" + articleUrl + ".html");
+            logger.info("移出redis爬取章节记录：" + "http://www.biquge.com.tw/" + bookUrl + "/" + articleUrl + ".html");
             removeBookUrl.remove("set_www.biquge.com.tw", "http://www.biquge.com.tw/" + bookUrl + "/" + articleUrl + ".html");
             Spider.create(new BiQuGePageProcessor()).addUrl("http://www.biquge.com.tw/" + bookUrl + "/" + articleUrl + ".html").addPipeline(biQuGePipeline)
                     .setScheduler(new RedisScheduler("127.0.0.1"))
                     .thread(1).run();
             modelAndView.addObject("article", articleService.getByUrl(bookUrl, articleUrl));
         } else {
+            Article next = articleService.getNext(bookUrl, articleUrl);
+            Article previous = articleService.getPrevious(bookUrl, articleUrl);
+            //上一页链接
+            modelAndView.addObject("next", next.getBookUrl() + "/" + next.getUrl() + ".html");
+            //当前页面
             modelAndView.addObject("article", article);
+            //下一页链接
+            modelAndView.addObject("previous", previous.getBookUrl() + "/" + previous.getUrl() + ".html");
+
         }
         modelAndView.setViewName("book/article");
         return modelAndView;

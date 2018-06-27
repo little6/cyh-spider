@@ -5,10 +5,9 @@ import cn.zero.spider.pojo.NovelsList;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ClassUtils;
+import org.springframework.util.ResourceUtils;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
@@ -21,7 +20,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 笔趣阁首页爬虫
@@ -57,12 +55,17 @@ public class BiQuGeIndexPageProcessor implements PageProcessor {
     @Override
     public void process(Page page) {
         String siteUrl = UrlUtils.getHost(page.getUrl().toString()) + "/";
+        File rootPath = null;
         //获取项目根目录
-        String path = Objects.requireNonNull(ClassUtils.getDefaultClassLoader().getResource("")).getPath();
+        try {
+            rootPath = new File(ResourceUtils.getURL("classpath:").getPath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //清理首页无用文件
         try {
-            FileUtils.cleanDirectory(new File(path+"static/img/index/"));
-        } catch (IOException e) {
+            FileUtils.cleanDirectory(new File(rootPath + "/static/img/index/"));
+        } catch (Exception e) {
             e.printStackTrace();
         }
         //2个大栏目
@@ -83,23 +86,32 @@ public class BiQuGeIndexPageProcessor implements PageProcessor {
                 //小说简介
                 top.setIntro(content.xpath("//*[@class=top]/dl/dd/text()").toString());
                 //小说封面
-
-                //封面图片
+                //封面图片下载
                 try {
                     URL url = new URL(content.xpath("//*[@class=\"top\"]/[@class=\"image\"]/img/@src").toString());
                     URLConnection con = url.openConnection();
-                    con.setRequestProperty("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36");
-                    con.setRequestProperty("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-                    con.setRequestProperty("Accept-Language","zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3");
+                    con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36");
+                    con.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+                    con.setRequestProperty("Accept-Language", "zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3");
                     inStream = con.getInputStream();
                     ByteArrayOutputStream outStream = new ByteArrayOutputStream();
                     byte[] buf = new byte[1024];
                     int len = 0;
-                    while((len = inStream.read(buf)) != -1){
-                        outStream.write(buf,0,len);
+                    while ((len = inStream.read(buf)) != -1) {
+                        outStream.write(buf, 0, len);
                     }
                     //图片下载地址
-                    File file = new File(path + "static/img/index/" + content.xpath("//*[@class=\"top\"]/[@class=\"image\"]/img/@src")
+                    if(!rootPath.exists()) {
+                        rootPath = new File("");
+                    }
+                    System.out.println("path:"+rootPath.getAbsolutePath());
+
+                    //如果上传目录为/static/images/upload/，则可以如下获取：
+                    File upload = new File(rootPath.getAbsolutePath(), "static/img/");
+                    if(!upload.exists()) {
+                        upload.mkdirs();
+                    }
+                    File file = new File(upload + "/index/" + content.xpath("//*[@class=\"top\"]/[@class=\"image\"]/img/@src")
                             .replace(UrlUtils.getHost(page.getUrl().toString()) + "/", "").toString());
                     if (!file.exists()) {
                         if (!file.getParentFile().exists()) {
@@ -117,7 +129,8 @@ public class BiQuGeIndexPageProcessor implements PageProcessor {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                top.setTitlePageUrl("img/index/"+content.xpath("//*[@class=\"top\"]/[@class=\"image\"]/img/@src")
+                //保存2封面链接到对象
+                top.setTitlePageUrl("img/index/" + content.xpath("//*[@class=\"top\"]/[@class=\"image\"]/img/@src")
                         .replace(UrlUtils.getHost(page.getUrl().toString()) + "/", "")
                         .toString());
                 novelsList.setTop(top);
@@ -133,7 +146,8 @@ public class BiQuGeIndexPageProcessor implements PageProcessor {
                 }
                 novelsList.setBooks(list);
                 System.out.println(novelsList);
-                stringRedisTemplate.opsForHash().put("novelsList",novelsList.getType(), JSON.toJSONString(novelsList));
+                //保存首页缓存到redis
+                stringRedisTemplate.opsForHash().put("novelsList", novelsList.getType(), JSON.toJSONString(novelsList));
             }
         }
 
