@@ -5,6 +5,7 @@ import cn.zero.spider.pojo.NovelsList;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
@@ -32,6 +33,10 @@ public class BiQuGeIndexPageProcessor implements PageProcessor {
 
     public static InputStream inStream = null;
 
+    /** 上传文件的根路径 */
+    @Value("${upload.root.path}")
+    private String uploadRootPath;
+
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
     private Site site = Site.me()
@@ -55,16 +60,9 @@ public class BiQuGeIndexPageProcessor implements PageProcessor {
     @Override
     public void process(Page page) {
         String siteUrl = UrlUtils.getHost(page.getUrl().toString()) + "/";
-        File rootPath = null;
-        //获取项目根目录
-        try {
-            rootPath = new File(ResourceUtils.getURL("classpath:").getPath());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         //清理首页无用文件
         try {
-            FileUtils.cleanDirectory(new File(rootPath + "/static/img/index/"));
+            FileUtils.cleanDirectory(new File(uploadRootPath + "img/index/"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -100,18 +98,8 @@ public class BiQuGeIndexPageProcessor implements PageProcessor {
                     while ((len = inStream.read(buf)) != -1) {
                         outStream.write(buf, 0, len);
                     }
-                    //图片下载地址
-                    if(!rootPath.exists()) {
-                        rootPath = new File("");
-                    }
-                    System.out.println("path:"+rootPath.getAbsolutePath());
 
-                    //如果上传目录为/static/images/upload/，则可以如下获取：
-                    File upload = new File(rootPath.getAbsolutePath(), "static/img/");
-                    if(!upload.exists()) {
-                        upload.mkdirs();
-                    }
-                    File file = new File(upload + "/index/" + content.xpath("//*[@class=\"top\"]/[@class=\"image\"]/img/@src")
+                    File file = new File(uploadRootPath + "img/index/" + content.xpath("//*[@class=\"top\"]/[@class=\"image\"]/img/@src")
                             .replace(UrlUtils.getHost(page.getUrl().toString()) + "/", "").toString());
                     if (!file.exists()) {
                         if (!file.getParentFile().exists()) {

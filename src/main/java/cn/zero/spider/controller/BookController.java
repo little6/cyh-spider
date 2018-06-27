@@ -39,6 +39,8 @@ public class BookController extends BaseController {
      */
     @Autowired
     private BiQuGePipeline biQuGePipeline;
+    @Autowired
+    private BiQuGePageProcessor biQuGePageProcessor;
 
 
     /**
@@ -58,7 +60,7 @@ public class BookController extends BaseController {
             //如果小说不存在 开始爬取
         } else {
             logger.info("开始新抓小说：http://www.biquge.com.tw/" + bookUrl);
-            Spider.create(new BiQuGePageProcessor())
+            Spider.create(biQuGePageProcessor)
                     .addUrl("http://www.biquge.com.tw/" + bookUrl).addPipeline(biQuGePipeline)
                     //url管理
                     .setScheduler(new RedisScheduler("127.0.0.1"))

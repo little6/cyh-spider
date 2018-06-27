@@ -6,7 +6,7 @@
     <groupId>cn.zero</groupId>
     <artifactId>spider</artifactId>
     <version>version1.0</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <name>cyh-spider</name>
     <description>java小说爬虫</description>
@@ -122,6 +122,17 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>1.4.2.RELEASE</version>
+                <configuration>
+                    <mainClass>cn.zero.spider.SpiderApplication</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
         <resources>
@@ -139,6 +150,7 @@
             </resource>
             <resource>
                 <directory>src/main/webapp</directory>
+                <targetPath>META-INF/resources</targetPath>
                 <includes>
                     <include>**/**</include>
                 </includes>

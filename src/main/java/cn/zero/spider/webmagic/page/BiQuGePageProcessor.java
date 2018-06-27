@@ -6,6 +6,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ResourceUtils;
@@ -30,8 +31,11 @@ import java.util.Objects;
 @Component
 public class BiQuGePageProcessor implements PageProcessor {
 
-    private Logger logger = LoggerFactory.getLogger(BiQuGePageProcessor.class);
+    /** 上传文件的根路径 */
+    @Value("${upload.root.path}")
+    private String uploadRootPath;
 
+    private Logger logger = LoggerFactory.getLogger(BiQuGePageProcessor.class);
 
     private Site site = Site.me()
             //下载失败的url重新放入队列尾部重试
@@ -88,7 +92,6 @@ public class BiQuGePageProcessor implements PageProcessor {
     public void getBook(Page page) {
         String siteUrl = UrlUtils.getHost(page.getUrl().toString()) + "/";
         logger.info("开始爬取小说详情：" + page.getUrl());
-        File rootPath = null;
         Book book = new Book();
         //小说详情地址 一级目录
         book.setBookUrl(page.getUrl().regex(siteUrl + "(\\w+)").toString());
@@ -102,20 +105,14 @@ public class BiQuGePageProcessor implements PageProcessor {
         book.setLatestChapterTitle(page.getHtml().xpath("//*[@id=\"info\"]/p[4]/a/text()").toString());
         //最新章节地址
         book.setLatestChapterUrl(page.getHtml().xpath("//*[@id=\"info\"]/p[4]/a/@href").regex("(\\w+)\\.html").toString());
-        //获取项目根目录
-        try {
-            rootPath = new File(ResourceUtils.getURL("classpath:").getPath());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         //封面图片
         try {
             FileUtils.copyURLToFile(new URL(UrlUtils.getHost(page.getUrl().toString()) + "/" + page.getHtml().xpath("//*[@id=\"fmimg\"]/img/@src").toString())
-                    , new File(rootPath + "/static/img/" + page.getHtml().xpath("//*[@id=\"fmimg\"]/img/@src").toString()));
+                    , new File(uploadRootPath + "img" + page.getHtml().xpath("//*[@id=\"fmimg\"]/img/@src").toString()));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        book.setTitlePageUrl("img/" + page.getHtml().xpath("//*[@id=\"fmimg\"]/img/@src").toString());
+        book.setTitlePageUrl("img" + page.getHtml().xpath("//*[@id=\"fmimg\"]/img/@src").toString());
         book.setSourceUrl(siteUrl);
         book.setChapterPage(page.getHtml().xpath("//*[@id=\"list\"]/dl")
                 //取消域名 只保存相对地址
