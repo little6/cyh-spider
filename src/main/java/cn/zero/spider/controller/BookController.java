@@ -86,17 +86,17 @@ public class BookController extends BaseController {
             System.out.println(encodeKey);
             resultItems = Spider.create(new BiQuGeSearchPageProcessor())
                     .get("http://www.biquge.com.tw/modules/article/soshu.php?searchkey=+"
-                            + encodeKey+(page==null?"":"&page="+page));
+                            + encodeKey + (page == null ? "" : "&page=" + page));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         if (resultItems != null) {
             resultItems.getAll().forEach(modelAndView::addObject);
         }
+        //搜索关键字
         modelAndView.addObject("key", key);
-        if (page != null) {
-            modelAndView.addObject("page", page);
-        }
+        //当前页面
+        modelAndView.addObject("page", page != null ? page : 1);
         modelAndView.setViewName("book/result");
         return modelAndView;
     }

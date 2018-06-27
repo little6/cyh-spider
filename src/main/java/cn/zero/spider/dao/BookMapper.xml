@@ -1,13 +1,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.zero.spider.dao.BookMapper">
+    <resultMap id="bookResultMap" type="cn.zero.spider.pojo.Book">
+        <id property="bookUrl" column="bookUrl"/>
+        <result property="author" column="author"/>
+        <result property="title" column="title"/>
+        <result property="updateTime" column="updateTime"/>
+        <result property="intro" column="intro"/>
+        <result property="latestChapterTitle" column="latestChapterTitle"/>
+        <result property="latestChapterUrl" column="latestChapterUrl"/>
+        <result property="titlePageUrl" column="titlePageUrl"/>
+        <result property="sourceUrl" column="sourceUrl"/>
+        <result property="chapterPage" column="chapterPage"/>
+    </resultMap>
     <insert id="save" parameterType="cn.zero.spider.pojo.Book">
         insert ignore into book
-        (bookUrl, author, title, updateTime, intro, latestChapterTitle, latestChaterUrl, titlePageUrl, sourceUrl, chapterPage)
+        (bookUrl, author, title, updateTime, intro, latestChapterTitle, latestChapterUrl, titlePageUrl, sourceUrl, chapterPage)
         VALUES
         (#{bookUrl},#{author},#{title},#{updateTime},#{intro},#{latestChapterTitle},#{latestChapterUrl},#{titlePageUrl}
         ,#{sourceUrl},#{chapterPage})
     </insert>
-    <select id="getById" resultType="cn.zero.spider.pojo.Book" parameterType="String">
+
+    <select id="getById" resultMap="bookResultMap" parameterType="String">
         select * from book where bookUrl=#{value}
     </select>
 

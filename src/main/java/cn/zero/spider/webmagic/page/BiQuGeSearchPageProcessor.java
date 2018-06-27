@@ -63,7 +63,7 @@ public class BiQuGeSearchPageProcessor implements PageProcessor {
 
         page.putField("books", books);
         System.out.println(books);
-        //结果个数
+        //结果页数
         page.putField("num", page.getHtml().xpath("//*[@id=\"pagelink\"]/a[@class=\"last\"]/text()").toString());
 
     }

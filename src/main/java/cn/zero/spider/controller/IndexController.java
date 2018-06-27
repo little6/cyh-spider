@@ -5,6 +5,7 @@ import cn.zero.spider.webmagic.page.BiQuGeIndexPageProcessor;
 import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,12 +50,14 @@ public class IndexController extends BaseController {
     @RequestMapping("/pa")
     public ModelAndView spiderIndex() {
         ModelAndView modelAndView = new ModelAndView();
-
+        SetOperations<String, String> removeBookUrl = stringRedisTemplate.opsForSet();
+        removeBookUrl.remove("set_www.biquge.com.tw", "http://www.biquge.com.tw/");
         stringRedisTemplate.delete("novelsList");
         Spider.create(biQuGeIndexPageProcessor)
                 .addUrl("http://www.biquge.com.tw/")
                 .setScheduler(new RedisScheduler("127.0.0.1"))
                 .runAsync();
+        modelAndView.setViewName("index");
         return modelAndView;
     }
 

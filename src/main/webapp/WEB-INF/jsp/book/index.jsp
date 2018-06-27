@@ -34,18 +34,20 @@
             margin-bottom: 0.5%;
             padding-top: 2%;
             padding-bottom: 2%;
+            height: 20%;
         }
         .photo{
-            width: 20%;
+            width: 10%;
+            margin-left: 5%;
             display: inline-block;
             background-color: #eee;
             /*     border: 1px solid black; */
             opacity: 0.8;
-            padding: 55px 0;
+            padding: 0 0;
         }
         img{
-            width: 80%;
-            margin-left: 10%;
+            width: 100%;
+            height: 100%;
         }
         .right{
             width: 77%;
@@ -110,15 +112,14 @@
 
 <main>
     <div class="top clearfix">
-        <div class="photo"><img src="${book.sourceUrl}/${book.titlePageUrl}"></div>
+        <div class="photo"><img src="${pageContext.request.contextPath}/${book.titlePageUrl}"></div>
         <div class="right">
             <h1>${book.title}</h1>
             <div>
                 <h4>${book.author}</h4>
                 <h4>最后更新：${book.updateTime}</h4>
-                <h4>最新章节：<a href="${pageContext.request.contextPath}/${book.bookUrl}/${book.latestChapterUrl}"></a>${book.latestChapterTitle}</h4>
+                <h4>最新章节：<a href="${pageContext.request.contextPath}/${book.bookUrl}/${book.latestChapterUrl}.html">${book.latestChapterTitle}</a></h4>
             </div>
-
             <div class="right-bottom">
                 <p>
                     ${book.intro}

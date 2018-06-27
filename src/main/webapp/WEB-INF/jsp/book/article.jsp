@@ -16,7 +16,7 @@
             width: 100%;
             overflow: hidden;
             text-align: left;
-            padding: 10px 0px 15px 0px;
+            padding: 10px 0 15px 0;
         }
 
         header {

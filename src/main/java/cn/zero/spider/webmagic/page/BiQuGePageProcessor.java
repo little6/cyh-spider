@@ -2,15 +2,22 @@ package cn.zero.spider.webmagic.page;
 
 import cn.zero.spider.pojo.Article;
 import cn.zero.spider.pojo.Book;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ClassUtils;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.utils.UrlUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Objects;
 
 /**
  * 笔趣阁爬虫
@@ -93,8 +100,16 @@ public class BiQuGePageProcessor implements PageProcessor {
         book.setLatestChapterTitle(page.getHtml().xpath("//*[@id=\"info\"]/p[4]/a/text()").toString());
         //最新章节地址
         book.setLatestChapterUrl(page.getHtml().xpath("//*[@id=\"info\"]/p[4]/a/@href").regex("(\\w+)\\.html").toString());
-        //封面链接
-        book.setTitlePageUrl(page.getHtml().xpath("//*[@id=\"fmimg\"]/img/@src").toString());
+        //获取项目根目录
+        String path = Objects.requireNonNull(ClassUtils.getDefaultClassLoader().getResource("")).getPath();
+        //封面图片
+        try {
+            FileUtils.copyURLToFile(new URL(UrlUtils.getHost(page.getUrl().toString())+"/"+page.getHtml().xpath("//*[@id=\"fmimg\"]/img/@src").toString())
+                    ,new File(path+"static/img/"+page.getHtml().xpath("//*[@id=\"fmimg\"]/img/@src").toString()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        book.setTitlePageUrl("img/"+page.getHtml().xpath("//*[@id=\"fmimg\"]/img/@src").toString());
         book.setSourceUrl(siteUrl);
         book.setChapterPage(page.getHtml().xpath("//*[@id=\"list\"]/dl")
                 //取消域名 只保存相对地址

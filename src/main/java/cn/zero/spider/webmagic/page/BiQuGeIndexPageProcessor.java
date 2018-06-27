@@ -3,10 +3,12 @@ package cn.zero.spider.webmagic.page;
 import cn.zero.spider.pojo.Book;
 import cn.zero.spider.pojo.NovelsList;
 import com.alibaba.fastjson.JSON;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ClassUtils;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
@@ -14,8 +16,12 @@ import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.Selectable;
 import us.codecraft.webmagic.utils.UrlUtils;
 
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 笔趣阁首页爬虫
@@ -26,6 +32,7 @@ import java.util.List;
 @Component
 public class BiQuGeIndexPageProcessor implements PageProcessor {
 
+    public static InputStream inStream = null;
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -35,7 +42,7 @@ public class BiQuGeIndexPageProcessor implements PageProcessor {
             //重试次数
             .setRetryTimes(3)
             //2页处理间隔 单位毫秒
-            .setSleepTime(100)
+            .setSleepTime(1000)
             //超时时间
             .setTimeOut(3000)
             .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
@@ -43,13 +50,21 @@ public class BiQuGeIndexPageProcessor implements PageProcessor {
             .setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36");
 
     /**
-     * process the page, extract urls to fetch, extract the data and store
+     * 处理页面，提取网址以提取数据并存储
      *
      * @param page page
      */
     @Override
     public void process(Page page) {
         String siteUrl = UrlUtils.getHost(page.getUrl().toString()) + "/";
+        //获取项目根目录
+        String path = Objects.requireNonNull(ClassUtils.getDefaultClassLoader().getResource("")).getPath();
+        //清理首页无用文件
+        try {
+            FileUtils.cleanDirectory(new File(path+"static/img/index/"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         //2个大栏目
         for (Selectable selectable :
                 page.getHtml().xpath("//*[@id=\"main\"]/[@class=\"novelslist\"]").nodes()) {
@@ -68,7 +83,43 @@ public class BiQuGeIndexPageProcessor implements PageProcessor {
                 //小说简介
                 top.setIntro(content.xpath("//*[@class=top]/dl/dd/text()").toString());
                 //小说封面
-                top.setTitlePageUrl(content.xpath("//*[@class=\"top\"]/[@class=\"image\"]/img/@src").toString());
+
+                //封面图片
+                try {
+                    URL url = new URL(content.xpath("//*[@class=\"top\"]/[@class=\"image\"]/img/@src").toString());
+                    URLConnection con = url.openConnection();
+                    con.setRequestProperty("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36");
+                    con.setRequestProperty("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+                    con.setRequestProperty("Accept-Language","zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3");
+                    inStream = con.getInputStream();
+                    ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+                    byte[] buf = new byte[1024];
+                    int len = 0;
+                    while((len = inStream.read(buf)) != -1){
+                        outStream.write(buf,0,len);
+                    }
+                    //图片下载地址
+                    File file = new File(path + "static/img/index/" + content.xpath("//*[@class=\"top\"]/[@class=\"image\"]/img/@src")
+                            .replace(UrlUtils.getHost(page.getUrl().toString()) + "/", "").toString());
+                    if (!file.exists()) {
+                        if (!file.getParentFile().exists()) {
+                            file.getParentFile().mkdirs();
+                        }
+                        boolean newFile = file.createNewFile();
+                        System.out.println(newFile);
+                    }
+                    FileOutputStream op = new FileOutputStream(file);
+                    op.write(outStream.toByteArray());
+                    inStream.close();
+                    outStream.close();
+                    op.close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                top.setTitlePageUrl("img/index/"+content.xpath("//*[@class=\"top\"]/[@class=\"image\"]/img/@src")
+                        .replace(UrlUtils.getHost(page.getUrl().toString()) + "/", "")
+                        .toString());
                 novelsList.setTop(top);
                 List<Book> list = new ArrayList<>();
                 //栏目文章信息
@@ -78,20 +129,18 @@ public class BiQuGeIndexPageProcessor implements PageProcessor {
                     book.setBookUrl(li.xpath("//*a/@href").regex(siteUrl + "(\\w+)").toString());
                     book.setTitle(li.xpath("//*a/text()").toString());
                     book.setAuthor(li.xpath("//*li/text()").regex("/(.*)").toString());
-                    System.out.println(book.toString());
                     list.add(book);
                 }
                 novelsList.setBooks(list);
-                BoundHashOperations<String, String, String> boundHashOperations = stringRedisTemplate.boundHashOps("novelsList");
-                boundHashOperations.put(novelsList.getType(), JSON.toJSONString(novelsList));
-
+                System.out.println(novelsList);
+                stringRedisTemplate.opsForHash().put("novelsList",novelsList.getType(), JSON.toJSONString(novelsList));
             }
         }
 
     }
 
     /**
-     * get the site settings
+     * 返回设置
      *
      * @return site
      * @see Site
@@ -102,6 +151,6 @@ public class BiQuGeIndexPageProcessor implements PageProcessor {
     }
 
     public static void main(String[] args) {
-        Spider.create(new BiQuGeIndexPageProcessor()).addUrl("http://www.biquge.com.tw/").run();
+        Spider.create(new BiQuGeIndexPageProcessor()).test("http://www.biquge.com.tw/");
     }
 }
