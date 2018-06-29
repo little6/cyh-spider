@@ -50,7 +50,7 @@ public class ArticleController extends BaseController {
         Article article = articleService.getByUrl(bookUrl, articleUrl);
         if (article == null) {
             SetOperations<String, String> removeBookUrl = stringRedisTemplate.opsForSet();
-            //移出已经爬取的小说章节记录
+            //移出已经爬取的小说章节记录 重新爬取章节
             logger.info("移出redis爬取章节记录：" + "http://www.biquge.com.tw/" + bookUrl + "/" + articleUrl + ".html");
             removeBookUrl.remove("set_www.biquge.com.tw", "http://www.biquge.com.tw/" + bookUrl + "/" + articleUrl + ".html");
             Spider.create(new BiQuGePageProcessor()).addUrl("http://www.biquge.com.tw/" + bookUrl + "/" + articleUrl + ".html").addPipeline(biQuGePipeline)
@@ -58,14 +58,19 @@ public class ArticleController extends BaseController {
                     .thread(1).run();
             modelAndView.addObject("article", articleService.getByUrl(bookUrl, articleUrl));
         } else {
+            //   下一章
             Article next = articleService.getNext(bookUrl, articleUrl);
+            if (next != null) {
+                //下一章链接
+                modelAndView.addObject("next", next.getBookUrl() + "/" + next.getUrl() + ".html");
+            }
             Article previous = articleService.getPrevious(bookUrl, articleUrl);
-            //上一页链接
-            modelAndView.addObject("next", next.getBookUrl() + "/" + next.getUrl() + ".html");
-            //当前页面
+            if (previous != null) {
+                //上一章链接
+                modelAndView.addObject("previous", previous.getBookUrl() + "/" + previous.getUrl() + ".html");
+            }
+            //当前章节
             modelAndView.addObject("article", article);
-            //下一页链接
-            modelAndView.addObject("previous", previous.getBookUrl() + "/" + previous.getUrl() + ".html");
 
         }
         modelAndView.setViewName("book/article");

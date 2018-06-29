@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 搜索
+ *
  * @author 蔡元豪
  * @date 2018/6/26 17:54
  */
@@ -54,7 +56,7 @@ public class BiQuGeSearchPageProcessor implements PageProcessor {
                     //状态
                     book.setStatus(selectable.xpath("//*[@id=\"nr\"]/td[6]/text()").toString());
                     //小说url
-                    book.setBookUrl(selectable.xpath("//*[@id=\"nr\"]/td[1]/a/@href").regex(UrlUtils.getHost(page.getUrl().toString())+"/(\\w+)").toString());
+                    book.setBookUrl(selectable.xpath("//*[@id=\"nr\"]/td[1]/a/@href").regex(UrlUtils.getHost(page.getUrl().toString()) + "/(\\w+)").toString());
                     book.setLatestChapterTitle(selectable.xpath("//*[@id=\"nr\"]/td[2]/a/text()").toString());
                     book.setLatestChapterUrl(selectable.xpath("//*[@id=\"nr\"]/td[2]/a/@href").regex("/\\w+/(\\w+)\\.html").toString());
                     books.add(book);

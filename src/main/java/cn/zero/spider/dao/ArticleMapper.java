@@ -2,6 +2,7 @@ package cn.zero.spider.dao;
 
 import cn.zero.spider.pojo.Article;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * The interface Article mapper.

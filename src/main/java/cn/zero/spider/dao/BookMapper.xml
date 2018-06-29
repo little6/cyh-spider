@@ -24,4 +24,12 @@
         select * from book where bookUrl=#{value}
     </select>
 
+    <update id="update" parameterType="cn.zero.spider.pojo.Book">
+        update book set
+        updateTime=#{updateTime},
+        latestChapterUrl=#{latestChapterUrl},
+        latestChapterTitle=#{latestChapterTitle},
+        chapterPage=#{chapterPage}
+        where bookUrl=#{bookUrl}
+    </update>
 </mapper>

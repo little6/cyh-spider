@@ -11,14 +11,15 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * @author chaterhower
  */
 @SpringBootApplication
 @Configuration
-@ComponentScan(basePackages = "cn.zero.spider")
 @MapperScan({"cn.zero.spider.dao"})
+@EnableScheduling
 public class SpiderApplication  extends SpringBootServletInitializer {
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {

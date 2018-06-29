@@ -7,6 +7,9 @@ import cn.zero.spider.service.IBookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.BoundSetOperations;
+import org.springframework.data.redis.core.SetOperations;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Task;
@@ -27,6 +30,8 @@ public class BiQuGePipeline implements Pipeline {
     private IBookService bookService;
     @Autowired
     private IArticleService articleService;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     /**
      * Process extracted results.
@@ -39,8 +44,24 @@ public class BiQuGePipeline implements Pipeline {
         Book book = resultItems.get("book");
         Article article = resultItems.get("article");
         if (book != null) {
-            logger.info("保存小说详情--《" + book.getTitle() + "》");
-            bookService.save(book);
+            SetOperations<String, String> opsForSet = stringRedisTemplate.opsForSet();
+            //查看是否已经爬取过 检测是否为更新操作
+            Boolean member = opsForSet.isMember("books", book.getBookUrl());
+            if (member){
+                Book old = bookService.getById(book.getBookUrl());
+                if (!old.getLatestChapterUrl().equals(book.getLatestChapterUrl())) {
+                    bookService.update(book);
+                    logger.info("更新小说详情成功--《" + book.getTitle() + "》");
+                }
+            }else {
+                bookService.save(book);
+                //保存已经爬取的小说列表
+                BoundSetOperations<String, String> books = stringRedisTemplate.boundSetOps("books");
+                books.add(book.getBookUrl());
+                logger.info("保存小说详情成功--《" + book.getTitle() + "》");
+            }
+
+
         }
         if (article != null) {
             logger.info("保存小说章节--《" + article.getTitle() + "》");

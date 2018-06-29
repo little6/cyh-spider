@@ -39,6 +39,7 @@ public class BookController extends BaseController {
      */
     @Autowired
     private BiQuGePipeline biQuGePipeline;
+
     @Autowired
     private BiQuGePageProcessor biQuGePageProcessor;
 

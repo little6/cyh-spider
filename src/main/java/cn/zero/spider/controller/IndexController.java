@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -17,8 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * The type Index controller.
+ *
  * @author 蔡元豪
- * @date 2018/6/23 21:55
+ * @date 2018 /6/23 21:55
  */
 @Controller
 public class IndexController extends BaseController {
@@ -34,7 +37,7 @@ public class IndexController extends BaseController {
     /**
      * 首页
      *
-     * @return
+     * @return model and view
      */
     @RequestMapping(value = {"", "index"})
     public ModelAndView index() {
@@ -47,12 +50,14 @@ public class IndexController extends BaseController {
         return modelAndView;
     }
 
+    /**
+     * 手动更新首页地址
+     *
+     * @return model and view
+     */
     @RequestMapping("/pa")
     public ModelAndView spiderIndex() {
         ModelAndView modelAndView = new ModelAndView();
-        SetOperations<String, String> removeBookUrl = stringRedisTemplate.opsForSet();
-        removeBookUrl.remove("set_www.biquge.com.tw", "http://www.biquge.com.tw/");
-        stringRedisTemplate.delete("novelsList");
         Spider.create(biQuGeIndexPageProcessor)
                 .addUrl("http://www.biquge.com.tw/")
                 .setScheduler(new RedisScheduler("127.0.0.1"))
