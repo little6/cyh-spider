@@ -47,17 +47,17 @@ public class BiQuGePipeline implements Pipeline {
             SetOperations<String, String> opsForSet = stringRedisTemplate.opsForSet();
             //查看是否已经爬取过 检测是否为更新操作
             Boolean member = opsForSet.isMember("books", book.getBookUrl());
-            if (member){
+            if (member) {
                 Book old = bookService.getById(book.getBookUrl());
                 if (!old.getLatestChapterUrl().equals(book.getLatestChapterUrl())) {
                     bookService.update(book);
                     logger.info("更新小说详情成功--《" + book.getTitle() + "》");
                 }
-            }else {
+            } else {
                 bookService.save(book);
                 //保存已经爬取的小说列表
-                BoundSetOperations<String, String> books = stringRedisTemplate.boundSetOps("books");
-                books.add(book.getBookUrl());
+                SetOperations<String, String> books = stringRedisTemplate.opsForSet();
+                books.add("books", book.getBookUrl());
                 logger.info("保存小说详情成功--《" + book.getTitle() + "》");
             }
 
