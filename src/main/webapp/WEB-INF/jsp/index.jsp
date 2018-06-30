@@ -9,7 +9,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>秋风引</title>
     <style>
         * {
             padding: 0;
@@ -32,53 +32,58 @@
             height: 10%;
         }
 
-
-
         /*搜索框*/
         .bar6 input {
-            border:2px solid #c5464a;
-            border-radius:5px;
-            background:transparent;
-            top:0;
-            right:0;
+            border: 2px solid #c5464a;
+            border-radius: 5px;
+            background: transparent;
+            top: 0;
+            right: 0;
         }
+
         .bar6 button {
-            background:#c5464a;
-            border-radius:0 5px 5px 0;
-            width:60px;
-            top:0;
-            right:0;
+            background: #c5464a;
+            border-radius: 0 5px 5px 0;
+            width: 60px;
+            top: 0;
+            right: 0;
         }
+
         .bar6 button:before {
-            content:"搜索";
-            font-size:13px;
-            color:#F9F0DA;
+            content: "搜索";
+            font-size: 13px;
+            color: #F9F0DA;
         }
 
         div.search {
-            padding:10px 0;
+            padding: 10px 0;
             margin: 2% 10% 0 70%;
         }
+
         form {
-            position:relative;
-            width:300px;
-            margin:0 auto;
+            position: relative;
+            width: 300px;
+            margin: 0 auto;
         }
-        input,button {
-            border:none;
-            outline:none;
+
+        input, button {
+            border: none;
+            outline: none;
         }
+
         input {
-            width:100%;
-            height:42px;
-            padding-left:13px;
+            width: 100%;
+            height: 42px;
+            padding-left: 13px;
         }
+
         button {
-            height:42px;
-            width:42px;
-            cursor:pointer;
-            position:absolute;
+            height: 42px;
+            width: 42px;
+            cursor: pointer;
+            position: absolute;
         }
+
         /*搜索框结束*/
 
         .main {
@@ -147,51 +152,57 @@
 
             /*搜索框*/
             .bar6 input {
-                border:2px solid #c5464a;
-                border-radius:5px;
-                background:transparent;
-                top:0;
-                right:0;
+                border: 2px solid #c5464a;
+                border-radius: 5px;
+                background: transparent;
+                top: 0;
+                right: 0;
             }
+
             .bar6 button {
-                background:#c5464a;
-                border-radius:0 5px 5px 0;
-                width:60px;
-                top:0;
-                right:0;
+                background: #c5464a;
+                border-radius: 0 5px 5px 0;
+                width: 60px;
+                top: 0;
+                right: 0;
             }
+
             .bar6 button:before {
-                content:"搜索";
-                font-size:13px;
-                color:#F9F0DA;
+                content: "搜索";
+                font-size: 13px;
+                color: #F9F0DA;
             }
 
             div.search {
-                padding:10px 0;
+                padding: 10px 0;
                 margin: 0 10% 0 60%;
             }
-            form {
-                position:relative;
-                width:300px;
-                margin:0 auto;
-            }
-            input,button {
-                border:none;
-                outline:none;
-            }
-            input {
-                width:100%;
-                height:42px;
-                padding-left:13px;
-            }
-            button {
-                height:42px;
-                width:42px;
-                cursor:pointer;
-                position:absolute;
-            }
-            /*搜索框结束*/
 
+            form {
+                position: relative;
+                width: 300px;
+                margin: 0 auto;
+            }
+
+            input, button {
+                border: none;
+                outline: none;
+            }
+
+            input {
+                width: 100%;
+                height: 42px;
+                padding-left: 13px;
+            }
+
+            button {
+                height: 42px;
+                width: 42px;
+                cursor: pointer;
+                position: absolute;
+            }
+
+            /*搜索框结束*/
             .content {
                 width: 99%;
                 display: block;
@@ -210,54 +221,59 @@
                 border-style: none;
             }
 
-
             /*搜索框*/
             .bar6 input {
-                border:2px solid #c5464a;
-                border-radius:5px;
-                background:transparent;
-                top:0;
-                right:0;
+                border: 2px solid #c5464a;
+                border-radius: 5px;
+                background: transparent;
+                top: 0;
+                right: 0;
             }
+
             .bar6 button {
-                background:#c5464a;
-                border-radius:0 5px 5px 0;
-                width:60px;
-                top:0;
-                right:0;
+                background: #c5464a;
+                border-radius: 0 5px 5px 0;
+                width: 60px;
+                top: 0;
+                right: 0;
             }
+
             .bar6 button:before {
-                content:"搜索";
-                font-size:13px;
-                color:#F9F0DA;
+                content: "搜索";
+                font-size: 13px;
+                color: #F9F0DA;
             }
 
             div.search {
-                padding:10px 0;
+                padding: 10px 0;
                 margin: 0 10% 0 70%;
             }
-            form {
-                position:relative;
-                width:300px;
-                margin:0 auto;
-            }
-            input,button {
-                border:none;
-                outline:none;
-            }
-            input {
-                width:100%;
-                height:42px;
-                padding-left:13px;
-            }
-            button {
-                height:42px;
-                width:42px;
-                cursor:pointer;
-                position:absolute;
-            }
-            /*搜索框结束*/
 
+            form {
+                position: relative;
+                width: 300px;
+                margin: 0 auto;
+            }
+
+            input, button {
+                border: none;
+                outline: none;
+            }
+
+            input {
+                width: 100%;
+                height: 42px;
+                padding-left: 13px;
+            }
+
+            button {
+                height: 42px;
+                width: 42px;
+                cursor: pointer;
+                position: absolute;
+            }
+
+            /*搜索框结束*/
             .content {
                 width: 99%;
                 display: block;
@@ -274,12 +290,12 @@
 </head>
 <body>
 <div class="clearfix">
-        <div class="search bar6">
-            <form method="get" action="${pageContext.request.contextPath}/search">
-                <input type="text" placeholder="请输入小说或者作者名字" name="key">
-                <button type="submit"></button>
-            </form>
-        </div>
+    <div class="search bar6">
+        <form method="get" action="${pageContext.request.contextPath}/search">
+            <input type="text" placeholder="请输入小说或者作者名字" name="key">
+            <button type="submit"></button>
+        </form>
+    </div>
 </div>
 <div class="main">
 
@@ -310,6 +326,8 @@
     </c:forEach>
 
 </div>
-
+<footer style="text-align: center">
+    本站所有小说为转载作品，所有章节均由网友上传，转载至本站只是为了宣传本书让更多读者欣赏。
+</footer>
 </body>
 </html>

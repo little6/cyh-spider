@@ -121,10 +121,12 @@ public class BiQuGePageProcessor implements PageProcessor {
         page.addTargetRequests(page.getHtml().xpath("//*[@id=\"list\"]/dl").links().all());
         if (book.getTitle() == null
                 || StringUtils.isBlank(book.getTitle())) {
+            logger.info("爬取小说详情失败：" + page.getUrl());
             page.setSkip(true);
+        }else {
+            page.putField("book", book);
+            logger.info("爬取《" + book.getTitle() + "》小说详情成功：" + page.getUrl());
         }
-        page.putField("book", book);
-        logger.info("爬取《" + book.getTitle() + "》小说详情成功：" + page.getUrl());
     }
 
     @Override

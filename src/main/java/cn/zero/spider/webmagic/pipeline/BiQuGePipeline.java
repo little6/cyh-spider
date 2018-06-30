@@ -52,6 +52,8 @@ public class BiQuGePipeline implements Pipeline {
                 if (!old.getLatestChapterUrl().equals(book.getLatestChapterUrl())) {
                     bookService.update(book);
                     logger.info("更新小说详情成功--《" + book.getTitle() + "》");
+                }else {
+                    logger.info("小说详情--《" + book.getTitle() + "》还没有更新信息");
                 }
             } else {
                 bookService.save(book);
@@ -64,8 +66,8 @@ public class BiQuGePipeline implements Pipeline {
 
         }
         if (article != null) {
-            logger.info("保存小说章节--《" + article.getTitle() + "》");
             articleService.save(article);
+            logger.info("保存小说章节--《" + article.getTitle() + "》");
         }
     }
 }

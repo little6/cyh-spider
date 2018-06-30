@@ -4,13 +4,13 @@ import cn.zero.spider.webmagic.page.BiQuGeIndexPageProcessor;
 import cn.zero.spider.webmagic.page.BiQuGePageProcessor;
 import cn.zero.spider.webmagic.pipeline.BiQuGePipeline;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.core.BoundSetOperations;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.scheduler.RedisScheduler;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -52,16 +52,15 @@ public class AgainSpider {
         //获取爬取过的小说
         BoundSetOperations<String, String> books = stringRedisTemplate.boundSetOps("books");
         Set<String> members = books.members();
-        BoundHashOperations<String, String, String> opsForHash = stringRedisTemplate.boundHashOps("set_www.biquge.com.tw");
+        BoundSetOperations<String, String> setOps = stringRedisTemplate.boundSetOps("set_www.biquge.com.tw");
         Set<String> membersLinks = new HashSet<>();
         for (String member :
                 members) {
             membersLinks.add("http://www.biquge.com.tw/" + member);
         }
         //删除已经爬取的url的redis记录
-        opsForHash.delete(membersLinks);
-        String[] urls = new String[membersLinks.size()];
-        membersLinks.toArray(urls);
+        String[] urls = membersLinks.toArray(new String[0]);
+        setOps.remove(urls);
         //重新更新爬取小说
         Spider.create(biQuGePageProcessor)
                 .addUrl(urls).addPipeline(biQuGePipeline)
