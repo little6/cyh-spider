@@ -5,6 +5,7 @@ import cn.zero.spider.service.IBookService;
 import cn.zero.spider.webmagic.page.BiQuGePageProcessor;
 import cn.zero.spider.webmagic.page.BiQuGeSearchPageProcessor;
 import cn.zero.spider.webmagic.pipeline.BiQuGePipeline;
+import cn.zero.spider.webmagic.task.AgainSpider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,9 @@ public class BookController extends BaseController {
     @Autowired
     private BiQuGePageProcessor biQuGePageProcessor;
 
+    @Autowired
+    private AgainSpider againSpider;
+
 
     /**
      * 小说详情页面
@@ -51,6 +55,7 @@ public class BookController extends BaseController {
      * @return book book
      */
     @RequestMapping(value = "/{bookUrl}")
+
     public ModelAndView book(@PathVariable("bookUrl") String bookUrl) {
 
         ModelAndView modelAndView = new ModelAndView();
@@ -102,6 +107,15 @@ public class BookController extends BaseController {
         modelAndView.addObject("page", page != null ? page : 1);
         modelAndView.setViewName("book/result");
         return modelAndView;
+    }
+
+
+    /**
+     * 手动更新小说
+     */
+    @RequestMapping("booksUpdate")
+    public void update() {
+        againSpider.books();
     }
 
 }

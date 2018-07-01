@@ -2,9 +2,7 @@ package cn.zero.spider.webmagic.page;
 
 import cn.zero.spider.pojo.Book;
 import us.codecraft.webmagic.Page;
-import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Site;
-import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.utils.UrlUtils;
 
@@ -34,7 +32,6 @@ public class BiQuGeSearchPageProcessor implements PageProcessor {
 
 
     /**
-     * process the page, extract urls to fetch, extract the data and store
      *
      * @param page page
      */
@@ -82,8 +79,4 @@ public class BiQuGeSearchPageProcessor implements PageProcessor {
         return site;
     }
 
-    public static void main(String[] args) {
-        ResultItems resultItems = Spider.create(new BiQuGeSearchPageProcessor()).get("http://www.biquge.com.tw/modules/article/soshu.php?searchkey=+%B6%B7%C6%C6%B2%D4%F1%B7");
-//        resultItems.getAll().forEach((k,v)-> System.out.println(v));
-    }
 }

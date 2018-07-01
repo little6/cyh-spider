@@ -4,11 +4,12 @@ import cn.zero.spider.pojo.Book;
 import cn.zero.spider.pojo.NovelsList;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ResourceUtils;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
@@ -31,11 +32,13 @@ import java.util.List;
 @Component
 public class BiQuGeIndexPageProcessor implements PageProcessor {
 
-    public static InputStream inStream = null;
-
-    /** 上传文件的根路径 */
+    /**
+     * 上传文件的根路径
+     */
     @Value("${upload.root.path}")
     private String uploadRootPath;
+
+    private Logger logger = LoggerFactory.getLogger(BiQuGeIndexPageProcessor.class);
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -91,7 +94,7 @@ public class BiQuGeIndexPageProcessor implements PageProcessor {
                     con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36");
                     con.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
                     con.setRequestProperty("Accept-Language", "zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3");
-                    inStream = con.getInputStream();
+                    InputStream inStream = con.getInputStream();
                     ByteArrayOutputStream outStream = new ByteArrayOutputStream();
                     byte[] buf = new byte[1024];
                     int len = 0;
@@ -103,10 +106,11 @@ public class BiQuGeIndexPageProcessor implements PageProcessor {
                             .replace(UrlUtils.getHost(page.getUrl().toString()) + "/", "").toString());
                     if (!file.exists()) {
                         if (!file.getParentFile().exists()) {
-                            file.getParentFile().mkdirs();
+                            if (file.getParentFile().mkdirs()) {
+                                logger.info("文件夹创建失败");
+                            }
                         }
-                        boolean newFile = file.createNewFile();
-                        System.out.println(newFile);
+                        file.createNewFile();
                     }
                     FileOutputStream op = new FileOutputStream(file);
                     op.write(outStream.toByteArray());

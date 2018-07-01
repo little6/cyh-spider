@@ -5,6 +5,7 @@ import cn.zero.spider.webmagic.page.BiQuGeIndexPageProcessor;
 import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The type Index controller.
+ * 首页 controller.
  *
  * @author 蔡元豪
  * @date 2018 /6/23 21:55
@@ -56,6 +57,8 @@ public class IndexController extends BaseController {
     @RequestMapping("/pa")
     public ModelAndView spiderIndex() {
         ModelAndView modelAndView = new ModelAndView();
+        SetOperations<String, String> opsForSet = stringRedisTemplate.opsForSet();
+        opsForSet.remove("set_www.biquge.com.tw", "http://www.biquge.com.tw/");
         Spider.create(biQuGeIndexPageProcessor)
                 .addUrl("http://www.biquge.com.tw/")
                 .setScheduler(new RedisScheduler("127.0.0.1"))
