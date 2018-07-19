@@ -3,7 +3,9 @@ package cn.zero.spider.controller;
 import cn.zero.spider.pojo.NovelsList;
 import cn.zero.spider.webmagic.page.BiQuGeIndexPageProcessor;
 import com.alibaba.fastjson.JSON;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -13,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.scheduler.RedisScheduler;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +34,11 @@ public class IndexController extends BaseController {
 
     @Autowired
     private BiQuGeIndexPageProcessor biQuGeIndexPageProcessor;
-
+    /**
+     * 上传文件的根路径
+     */
+    @Value("${upload.root.path}")
+    private String uploadRootPath;
 
     /**
      * 首页
@@ -58,6 +65,11 @@ public class IndexController extends BaseController {
     public ModelAndView spiderIndex() {
         ModelAndView modelAndView = new ModelAndView();
         SetOperations<String, String> opsForSet = stringRedisTemplate.opsForSet();
+        try {
+            FileUtils.cleanDirectory(new File(uploadRootPath + "img/index/"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         opsForSet.remove("set_www.biquge.com.tw", "http://www.biquge.com.tw/");
         Spider.create(biQuGeIndexPageProcessor)
                 .addUrl("http://www.biquge.com.tw/")

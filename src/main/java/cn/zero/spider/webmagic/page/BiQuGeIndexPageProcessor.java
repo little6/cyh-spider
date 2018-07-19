@@ -63,12 +63,6 @@ public class BiQuGeIndexPageProcessor implements PageProcessor {
     @Override
     public void process(Page page) {
         String siteUrl = UrlUtils.getHost(page.getUrl().toString()) + "/";
-        //清理首页无用文件
-        try {
-            FileUtils.cleanDirectory(new File(uploadRootPath + "img/index/"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         //2个大栏目
         for (Selectable selectable :
                 page.getHtml().xpath("//*[@id=\"main\"]/[@class=\"novelslist\"]").nodes()) {

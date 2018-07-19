@@ -2,11 +2,13 @@ package cn.zero.spider.webmagic.page;
 
 import cn.zero.spider.pojo.Article;
 import cn.zero.spider.pojo.Book;
+import javafx.application.Application;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.system.ApplicationHome;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ResourceUtils;
@@ -31,7 +33,9 @@ import java.util.Objects;
 @Component
 public class BiQuGePageProcessor implements PageProcessor {
 
-    /** 上传文件的根路径 */
+    /**
+     * 上传文件的根路径
+     */
     @Value("${upload.root.path}")
     private String uploadRootPath;
 

@@ -91,7 +91,6 @@ public class BookController extends BaseController {
         ResultItems resultItems = null;
         try {
             String encodeKey = URLEncoder.encode(key, "gb2312");
-            System.out.println(encodeKey);
             resultItems = Spider.create(new BiQuGeSearchPageProcessor())
                     .get("http://www.biquge.com.tw/modules/article/soshu.php?searchkey=+"
                             + encodeKey + (page == null ? "" : "&page=" + page));

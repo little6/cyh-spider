@@ -1,11 +1,5 @@
 package cn.zero.spider.service.impl;
 
-/**
- * @author 蔡元豪
- * @date 2018/6/23 22:36
- */
-
-
 import cn.zero.spider.dao.BaseMapper;
 import cn.zero.spider.service.IBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +14,7 @@ import java.util.List;
  * @author 蔡元豪
  * @date 2018/5/28 11:20
  */
-public class BaseServiceImpl<T> implements IBaseService<T> {
+public abstract class BaseServiceImpl<T> implements IBaseService<T> {
 
 
     @Autowired
