@@ -11,6 +11,8 @@
     <title>小说更新中</title>
 </head>
 <body>
+<jsp:include page="../nav.jsp"/>
+
 小说更新中!请3s后刷新重试！
 </body>
 </html>

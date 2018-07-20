@@ -15,7 +15,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @Configuration
 @MapperScan({"cn.zero.spider.dao"})
 @EnableScheduling
-public class SpiderApplication  extends SpringBootServletInitializer {
+public class SpiderApplication extends SpringBootServletInitializer {
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(SpiderApplication.class);

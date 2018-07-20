@@ -74,12 +74,46 @@
         .pagination a:hover:not(.active) {
             background-color: #ddd;
         }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            border: 1px solid #e7e7e7;
+        }
+
+        nav li {
+            align-content: center;
+        }
+
+        nav li a {
+            display: block;
+            color: #666;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        nav li a:hover:not(.active) {
+            background-color: #ddd;
+        }
+
+        nav li a.active {
+            color: white;
+            background-color: #4CAF50;
+        }
     </style>
     <script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
     <script src="${pageContext.request.contextPath}/js/jquery.pagination.js"></script>
 
 </head>
 <body>
+<nav>
+    <ul>
+        <li><a href="${pageContext.request.contextPath}/" class="active" title="首页">首页</a></li>
+    </ul>
+</nav>
 <div class="container">
     <c:if test="${books!=null}">
         <table>

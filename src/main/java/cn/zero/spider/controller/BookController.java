@@ -1,6 +1,8 @@
 package cn.zero.spider.controller;
 
+import cn.zero.spider.pojo.Article;
 import cn.zero.spider.pojo.Book;
+import cn.zero.spider.service.IArticleService;
 import cn.zero.spider.service.IBookService;
 import cn.zero.spider.webmagic.page.BiQuGePageProcessor;
 import cn.zero.spider.webmagic.page.BiQuGeSearchPageProcessor;
@@ -18,6 +20,8 @@ import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.scheduler.RedisScheduler;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -35,6 +39,8 @@ public class BookController extends BaseController {
     @Autowired
     private IBookService bookService;
 
+    @Autowired
+    private IArticleService articleService;
     /**
      * 小说详情和章节保存组件
      */
@@ -56,9 +62,15 @@ public class BookController extends BaseController {
      */
     @RequestMapping(value = "/{bookUrl}")
 
-    public ModelAndView book(@PathVariable("bookUrl") String bookUrl) {
-
+    public ModelAndView book(@PathVariable("bookUrl") String bookUrl, HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView();
+        for (Cookie cookie : request.getCookies()) {
+            if (cookie.getName().equals(bookUrl)) {
+                Article article = articleService.getByUrl(bookUrl, cookie.getValue());
+                article.setContent(null);
+                modelAndView.addObject("record", article);
+            }
+        }
         Book book = bookService.getById(bookUrl);
         if (book != null) {
             modelAndView.addObject("book", book);

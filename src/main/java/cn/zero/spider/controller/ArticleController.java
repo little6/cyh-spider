@@ -16,6 +16,9 @@ import org.springframework.web.servlet.ModelAndView;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.scheduler.RedisScheduler;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * 章节控制器
  *
@@ -45,7 +48,11 @@ public class ArticleController extends BaseController {
      * @return article
      */
     @RequestMapping(value = "/{bookUrl}/{articleUrl}.html")
-    public ModelAndView article(@PathVariable("bookUrl") String bookUrl, @PathVariable("articleUrl") String articleUrl) {
+    public ModelAndView article(@PathVariable("bookUrl") String bookUrl, @PathVariable("articleUrl") String articleUrl, HttpServletResponse response) {
+        Cookie cookie = new Cookie(bookUrl, articleUrl);
+        //30天过期
+        cookie.setMaxAge(60 * 60 * 24 * 30);
+        response.addCookie(cookie);
         ModelAndView modelAndView = new ModelAndView();
         Article article = articleService.getByUrl(bookUrl, articleUrl);
         if (article == null) {

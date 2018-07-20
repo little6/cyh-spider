@@ -286,9 +286,12 @@
                 text-align: center;
             }
         }
+
     </style>
 </head>
 <body>
+
+<jsp:include page="nav.jsp"/>
 <div class="clearfix">
     <div class="search bar6">
         <form method="get" action="${pageContext.request.contextPath}/search">
