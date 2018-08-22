@@ -13,7 +13,6 @@ public class SpiderApplicationTests {
 
     @Test
     public void contextLoads() {
-        Spider.create(new BiQuGeIndexPageProcessor()).test("http://www.biquge.com.tw/");
 
     }
 
