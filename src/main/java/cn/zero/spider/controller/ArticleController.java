@@ -39,6 +39,9 @@ public class ArticleController extends BaseController {
     @Autowired
     private BiQuGePipeline biQuGePipeline;
 
+    @Autowired
+    private RedisScheduler redisScheduler;
+
 
     /**
      * 小说章节内容页面
@@ -60,8 +63,9 @@ public class ArticleController extends BaseController {
             //移出已经爬取的小说章节记录 重新爬取章节
             logger.info("移出redis爬取章节记录：" + "http://www.biquge.com.tw/" + bookUrl + "/" + articleUrl + ".html");
             removeBookUrl.remove("set_www.biquge.com.tw", "http://www.biquge.com.tw/" + bookUrl + "/" + articleUrl + ".html");
-            Spider.create(new BiQuGePageProcessor()).addUrl("http://www.biquge.com.tw/" + bookUrl + "/" + articleUrl + ".html").addPipeline(biQuGePipeline)
-                    .setScheduler(new RedisScheduler("127.0.0.1"))
+            Spider.create(new BiQuGePageProcessor()).addUrl("http://www.biquge.com.tw/" + bookUrl + "/" + articleUrl + ".html")
+                    .addPipeline(biQuGePipeline)
+                    .setScheduler(redisScheduler)
                     .thread(1).run();
             modelAndView.addObject("article", articleService.getByUrl(bookUrl, articleUrl));
         } else {

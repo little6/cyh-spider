@@ -150,7 +150,4 @@ public class BiQuGeIndexPageProcessor implements PageProcessor {
         return site;
     }
 
-    public static void main(String[] args) {
-        Spider.create(new BiQuGeIndexPageProcessor()).test("http://www.biquge.com.tw/");
-    }
 }

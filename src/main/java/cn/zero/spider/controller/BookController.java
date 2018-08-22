@@ -53,6 +53,9 @@ public class BookController extends BaseController {
     @Autowired
     private AgainSpider againSpider;
 
+    @Autowired
+    private RedisScheduler redisScheduler;
+
 
     /**
      * 小说详情页面
@@ -61,7 +64,6 @@ public class BookController extends BaseController {
      * @return book book
      */
     @RequestMapping(value = "/{bookUrl}")
-
     public ModelAndView book(@PathVariable("bookUrl") String bookUrl, HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView();
         for (Cookie cookie : request.getCookies()) {
@@ -81,7 +83,7 @@ public class BookController extends BaseController {
             Spider.create(biQuGePageProcessor)
                     .addUrl("http://www.biquge.com.tw/" + bookUrl).addPipeline(biQuGePipeline)
                     //url管理
-                    .setScheduler(new RedisScheduler("127.0.0.1"))
+                    .setScheduler(redisScheduler)
                     .thread(20).runAsync();
             modelAndView.setViewName("book/info");
         }

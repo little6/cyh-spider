@@ -41,9 +41,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -122,6 +125,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <!--打包插件在这个版本只上的插件貌似已经不支持打包jsp到jar，会找不到文件-->
                 <version>1.4.2.RELEASE</version>
                 <configuration>
                     <mainClass>cn.zero.spider.SpiderApplication</mainClass>
@@ -149,6 +153,7 @@
                 </includes>
             </resource>
             <resource>
+                <!--这样才可以让打包的资源在jar中运行-->
                 <directory>src/main/webapp</directory>
                 <targetPath>META-INF/resources</targetPath>
                 <includes>

@@ -34,11 +34,16 @@ public class IndexController extends BaseController {
 
     @Autowired
     private BiQuGeIndexPageProcessor biQuGeIndexPageProcessor;
+
+    @Autowired
+    private RedisScheduler redisScheduler;
+
     /**
      * 上传文件的根路径
      */
     @Value("${upload.root.path}")
     private String uploadRootPath;
+
 
     /**
      * 首页
@@ -57,11 +62,11 @@ public class IndexController extends BaseController {
     }
 
     /**
-     * 手动更新首页地址
+     * 手动更新首页
      *
      * @return model and view
      */
-    @RequestMapping("/pa")
+    @RequestMapping("/updateIndex")
     public ModelAndView spiderIndex() {
         ModelAndView modelAndView = new ModelAndView();
         SetOperations<String, String> opsForSet = stringRedisTemplate.opsForSet();
@@ -73,7 +78,7 @@ public class IndexController extends BaseController {
         opsForSet.remove("set_www.biquge.com.tw", "http://www.biquge.com.tw/");
         Spider.create(biQuGeIndexPageProcessor)
                 .addUrl("http://www.biquge.com.tw/")
-                .setScheduler(new RedisScheduler("127.0.0.1"))
+                .setScheduler(redisScheduler)
                 .runAsync();
         modelAndView.setViewName("index");
         return modelAndView;

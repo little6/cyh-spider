@@ -13,23 +13,40 @@
         <result property="chapterPage" column="chapterPage"/>
     </resultMap>
     <insert id="save" parameterType="cn.zero.spider.pojo.Book">
-        insert ignore into book
-        (bookUrl, author, title, updateTime, intro, latestChapterTitle, latestChapterUrl, titlePageUrl, sourceUrl, chapterPage)
-        VALUES
-        (#{bookUrl},#{author},#{title},#{updateTime},#{intro},#{latestChapterTitle},#{latestChapterUrl},#{titlePageUrl}
-        ,#{sourceUrl},#{chapterPage})
+        insert ignore into book (bookUrl,
+                                 author,
+                                 title,
+                                 updateTime,
+                                 intro,
+                                 latestChapterTitle,
+                                 latestChapterUrl,
+                                 titlePageUrl,
+                                 sourceUrl,
+                                 chapterPage)
+        VALUES (#{bookUrl},
+                #{author},
+                #{title},
+                #{updateTime},
+                #{intro},
+                #{latestChapterTitle},
+                #{latestChapterUrl},
+                #{titlePageUrl},
+                #{sourceUrl},
+                #{chapterPage})
     </insert>
 
     <select id="getById" resultMap="bookResultMap" parameterType="String">
-        select * from book where bookUrl=#{value}
+        select *
+        from book
+        where bookUrl = #{value}
     </select>
 
     <update id="update" parameterType="cn.zero.spider.pojo.Book">
-        update book set
-        updateTime=#{updateTime},
-        latestChapterUrl=#{latestChapterUrl},
-        latestChapterTitle=#{latestChapterTitle},
-        chapterPage=#{chapterPage}
-        where bookUrl=#{bookUrl}
+        update book
+        set updateTime         = #{updateTime},
+            latestChapterUrl   = #{latestChapterUrl},
+            latestChapterTitle = #{latestChapterTitle},
+            chapterPage        = #{chapterPage}
+        where bookUrl = #{bookUrl}
     </update>
 </mapper>
