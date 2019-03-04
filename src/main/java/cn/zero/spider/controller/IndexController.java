@@ -45,6 +45,9 @@ public class IndexController extends BaseController {
     private String uploadRootPath;
 
 
+    @Value("${spider.url}")
+    private String spiderUrl;
+
     /**
      * 首页
      *
@@ -75,9 +78,9 @@ public class IndexController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        opsForSet.remove("set_www.biquge.com.tw", "http://www.biquge.com.tw/");
+        opsForSet.remove("set_" + spiderUrl.replace("http://", ""), spiderUrl + "/");
         Spider.create(biQuGeIndexPageProcessor)
-                .addUrl("http://www.biquge.com.tw/")
+                .addUrl(spiderUrl + "/")
                 .setScheduler(redisScheduler)
                 .runAsync();
         modelAndView.setViewName("index");

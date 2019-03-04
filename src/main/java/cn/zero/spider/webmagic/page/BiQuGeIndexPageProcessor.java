@@ -101,21 +101,22 @@ public class BiQuGeIndexPageProcessor implements PageProcessor {
                     if (!file.exists()) {
                         if (!file.getParentFile().exists()) {
                             if (file.getParentFile().mkdirs()) {
-                                logger.info("文件夹创建失败");
+                                logger.info("创建文件{}成功", file.getName());
                             }
                         }
                         file.createNewFile();
                     }
-                    FileOutputStream op = new FileOutputStream(file);
-                    op.write(outStream.toByteArray());
-                    inStream.close();
-                    outStream.close();
-                    op.close();
-
+                    try (FileOutputStream op = new FileOutputStream(file)) {
+                        op.write(outStream.toByteArray());
+                    } finally {
+                        inStream.close();
+                        outStream.close();
+                    }
                 } catch (IOException e) {
+                    logger.error(e.getMessage());
                     e.printStackTrace();
                 }
-                //保存2封面链接到对象
+                //保存封面链接到对象
                 top.setTitlePageUrl("img/index/" + content.xpath("//*[@class=\"top\"]/[@class=\"image\"]/img/@src")
                         .replace(UrlUtils.getHost(page.getUrl().toString()) + "/", "")
                         .toString());

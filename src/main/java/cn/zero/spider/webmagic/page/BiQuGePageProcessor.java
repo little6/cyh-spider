@@ -25,7 +25,7 @@ import java.util.Objects;
 
 /**
  * 笔趣阁爬虫
- * http://www.biquge.com.tw/
+ * http://www.biquyun.com/
  *
  * @author 蔡元豪
  * @date 2018/6/23 15:57
@@ -39,6 +39,10 @@ public class BiQuGePageProcessor implements PageProcessor {
     @Value("${upload.root.path}")
     private String uploadRootPath;
 
+    @Value("${spider.url}")
+    private String spiderUrl;
+    @Value("${image.url}")
+    private String imageUrl;
     private Logger logger = LoggerFactory.getLogger(BiQuGePageProcessor.class);
 
     private Site site = Site.me()
@@ -71,9 +75,9 @@ public class BiQuGePageProcessor implements PageProcessor {
     public void getArticle(Page page) {
         Article article = new Article();
         //设置章节目录
-        article.setUrl(Integer.parseInt(page.getUrl().regex("http://www.biquge.com.tw/\\w+/(\\w+)").toString()));
+        article.setUrl(Integer.parseInt(page.getUrl().regex(spiderUrl+"/\\w+/(\\w+)").toString()));
         //设置小说目录
-        article.setBookUrl(page.getUrl().regex("http://www.biquge.com.tw/(\\w+)").toString());
+        article.setBookUrl(page.getUrl().regex(spiderUrl+"/(\\w+)").toString());
         //章节名
         article.setTitle(page.getHtml().css("#wrapper > div.content_read > div > div.bookname > h1").xpath("//*/text()").toString());
         //章节正文
@@ -110,13 +114,14 @@ public class BiQuGePageProcessor implements PageProcessor {
         //最新章节地址
         book.setLatestChapterUrl(page.getHtml().xpath("//*[@id=\"info\"]/p[4]/a/@href").regex("(\\w+)\\.html").toString());
         //封面图片
+        String imageUrlTemp = "img" + page.getHtml().xpath("//*[@id=\"fmimg\"]/img/@src").toString().replace(imageUrl + "/", "");
         try {
-            FileUtils.copyURLToFile(new URL(UrlUtils.getHost(page.getUrl().toString()) + "/" + page.getHtml().xpath("//*[@id=\"fmimg\"]/img/@src").toString())
-                    , new File(uploadRootPath + "img" + page.getHtml().xpath("//*[@id=\"fmimg\"]/img/@src").toString()));
+            FileUtils.copyURLToFile(new URL(page.getHtml().xpath("//*[@id=\"fmimg\"]/img/@src").toString())
+                    , new File(uploadRootPath+imageUrlTemp));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        book.setTitlePageUrl("img" + page.getHtml().xpath("//*[@id=\"fmimg\"]/img/@src").toString());
+        book.setTitlePageUrl(imageUrlTemp);
         book.setSourceUrl(siteUrl);
         book.setChapterPage(page.getHtml().xpath("//*[@id=\"list\"]/dl")
                 //取消域名 只保存相对地址
@@ -139,6 +144,6 @@ public class BiQuGePageProcessor implements PageProcessor {
     }
 
     public static void main(String[] args) {
-        Spider.create(new BiQuGePageProcessor()).test("http://www.biquge.com.tw/8_8568/");
+        Spider.create(new BiQuGePageProcessor()).test("http://www.biquyun.com/8_8568/");
     }
 }

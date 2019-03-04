@@ -11,6 +11,7 @@ import cn.zero.spider.webmagic.task.AgainSpider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,6 +57,8 @@ public class BookController extends BaseController {
     @Autowired
     private RedisScheduler redisScheduler;
 
+    @Value("${spider.url}")
+    private String spiderUrl;
 
     /**
      * 小说详情页面
@@ -79,9 +82,9 @@ public class BookController extends BaseController {
             modelAndView.setViewName("book/index");
             //如果小说不存在 开始爬取
         } else {
-            logger.info("开始新抓小说：http://www.biquge.com.tw/" + bookUrl);
+            logger.info("开始新抓小说：" + bookUrl);
             Spider.create(biQuGePageProcessor)
-                    .addUrl("http://www.biquge.com.tw/" + bookUrl).addPipeline(biQuGePipeline)
+                    .addUrl(spiderUrl+"/" + bookUrl).addPipeline(biQuGePipeline)
                     //url管理
                     .setScheduler(redisScheduler)
                     .thread(20).runAsync();
@@ -106,7 +109,7 @@ public class BookController extends BaseController {
         try {
             String encodeKey = URLEncoder.encode(key, "gb2312");
             resultItems = Spider.create(new BiQuGeSearchPageProcessor())
-                    .get("http://www.biquge.com.tw/modules/article/soshu.php?searchkey=+"
+                    .get(spiderUrl+"/modules/article/soshu.php?searchkey=+"
                             + encodeKey + (page == null ? "" : "&page=" + page));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

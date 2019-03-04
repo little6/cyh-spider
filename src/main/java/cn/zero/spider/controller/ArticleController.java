@@ -7,6 +7,7 @@ import cn.zero.spider.webmagic.pipeline.BiQuGePipeline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
@@ -42,6 +43,8 @@ public class ArticleController extends BaseController {
     @Autowired
     private RedisScheduler redisScheduler;
 
+    @Value("${spider.url}")
+    private String spiderUrl;
 
     /**
      * 小说章节内容页面
@@ -61,9 +64,9 @@ public class ArticleController extends BaseController {
         if (article == null) {
             SetOperations<String, String> removeBookUrl = stringRedisTemplate.opsForSet();
             //移出已经爬取的小说章节记录 重新爬取章节
-            logger.info("移出redis爬取章节记录：" + "http://www.biquge.com.tw/" + bookUrl + "/" + articleUrl + ".html");
-            removeBookUrl.remove("set_www.biquge.com.tw", "http://www.biquge.com.tw/" + bookUrl + "/" + articleUrl + ".html");
-            Spider.create(new BiQuGePageProcessor()).addUrl("http://www.biquge.com.tw/" + bookUrl + "/" + articleUrl + ".html")
+            logger.info("移出redis爬取章节记录：" + spiderUrl+"/" + bookUrl + "/" + articleUrl + ".html");
+            removeBookUrl.remove("set_"+spiderUrl.replace("http://",""), spiderUrl+"/" + bookUrl + "/" + articleUrl + ".html");
+            Spider.create(new BiQuGePageProcessor()).addUrl(spiderUrl+"/" + bookUrl + "/" + articleUrl + ".html")
                     .addPipeline(biQuGePipeline)
                     .setScheduler(redisScheduler)
                     .thread(1).run();

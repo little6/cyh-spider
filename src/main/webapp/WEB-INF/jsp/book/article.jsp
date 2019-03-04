@@ -9,99 +9,205 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>${article.title}</title>
-    <style>
-        article {
-            font-size: 20px;
-            line-height: 32px;
-            width: 80%;
-            overflow: hidden;
-            text-align: left;
-            padding: 10px 10% 15px 10%;
-            border: 1px solid burlywood;
-            background-color: burlywood;
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        *{
+            padding: 0;
+            margin: 0;
         }
-
-        header {
-            display: block;
+        a{
+            text-decoration: none;
+            color: #000000;
+        }
+        body{
             width: 100%;
+            background: #FDF5E6;
         }
-
-        .content {
-            display: block;
-            margin-left: 20%;
-            margin-right: 20%;
+        .back{
+            width: 45px;
+            height: 45px;
+            line-height: 45px;
+            text-align: center;
+            position: fixed;
+            left: 78%;
+            border-radius: 22.5px;
+            font-size: 14px;
+            border: 1px solid #C1CDCD;
         }
-
-        h1 {
-            display: block;
+        .up{
+            top: 8%;
+        }
+        .down{
+            top:16%;
+        }
+        #main{
+            width: 56%;
             margin: 0 auto;
-            text-align: center;
+            background: #EEE8CD;
+            border: 1px solid #C1CDCD;
         }
-
-        .chapterNav {
+        #main-content{
+            width: 85%;
+            margin: 0 auto;
+            /*border: 1px solid #FFDAB9;*/
+        }
+        h1{
+            width: 36%;
+            text-align: center;
+            /*border: 1px solid #FFDAB9;*/
+            margin: 20px auto;
+        }
+        .nav{
+            width: 90%;
+            margin: 10px auto;
+            text-align: center;
+            font-size: 14px;
+            color: grey;
             display: block;
-            text-align: center;
+            /*border: 1px solid black;*/
         }
-
-        .chapterNav a {
-            font-size: 2em;
+        .nav a{
+            color: grey;
+            margin-right: 6px;
+        }
+        .nav a:hover{
+            color: purple;
+        }
+        .line{
+            width: 1px;
+            height: 12px;
             display: inline-block;
-            text-decoration-line: none;
-            margin: 0 10%;
-            color: #32291d;
+            margin: 8px 6px 0;
+            border-left: 1px solid grey;
+        }
+        .content{
+            margin-top: 20px;
+        }
+        .content p{
+            text-indent: 2em;
+            margin-top: 8px;
+            font-size: 14px;
+            color: #4F4F4F;
+        }
+        #btn{
+            width: 60%;
+            margin: 60px auto;
+            /*border: 1px solid black;*/
+        }
+        .btn-content{
+            width: 49.5%;
+            display: inline-block;
+            text-align: center;
+            /*border: 1px solid black;*/
+        }
+        .btn-content:nth-child(2){
+            display: none;
+        }
+        .font{
+            color: grey;
+        }
+        .btn-content:last-child{
+            float: right;
+            border-left: 1px solid grey;
         }
 
-        body {
-            background-color: #ecc896;
+        @media screen and (max-width: 800px) {
+            .back{
+                display: none;
+            }
+            #main{
+                width: 100%;
+                margin: 0 auto;
+                background: #EEE8CD;
+                border: 1px solid #C1CDCD;
+            }
+            .nav{
+                display: none;
+            }
+            #btn{
+                width: 90%;
+                margin: 60px auto;
+                /*border: 1px solid black;*/
+            }
+            .btn-content{
+                width: 32%;
+                display: inline-block;
+                text-align: center;
+                /*border: 1px solid black;*/
+            }
+            .btn-content:nth-child(2){
+                display: inline-block;
+                border-left: 1px solid grey;
+            }
+            .font{
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
 
 
-<header>
-    <h1>${article.title}</h1>
-</header>
 
-<div class="content">
-    <div class="chapterNav">
-        <c:if test="${previous==null}">
-            <a href="${pageContext.request.contextPath}/${article.bookUrl}">没有了</a>
-        </c:if>
-        <c:if test="${previous!=null}">
-            <a href="${pageContext.request.contextPath}/${previous}">上一章</a>
-        </c:if>
-        <a href="${pageContext.request.contextPath}/${article.bookUrl}">章节目录</a>
-        <c:if test="${next==null}">
-            <a href="${pageContext.request.contextPath}/${article.bookUrl}">没有了</a>
-        </c:if>
-        <c:if test="${next!=null}">
-            <a href="${pageContext.request.contextPath}/${next}">下一章</a>
-        </c:if>
+<c:if test="${previous==null}">
+    <div class="back up">
+        <a href="${pageContext.request.contextPath}/${article.bookUrl}">没有了</a>
     </div>
-
-    <article>
-        ${article.content}
-    </article>
-    <div class="chapterNav">
-        <c:if test="${previous==null}">
-            <a href="${pageContext.request.contextPath}/${article.bookUrl}">没有了</a>
-        </c:if>
-        <c:if test="${previous!=null}">
-            <a href="${pageContext.request.contextPath}/${previous}">上一章</a>
-        </c:if>
-        <a href="${pageContext.request.contextPath}/${article.bookUrl}">章节目录</a>
-        <c:if test="${next==null}">
-            <a href="${pageContext.request.contextPath}/${article.bookUrl}">没有了</a>
-        </c:if>
-        <c:if test="${next!=null}">
-            <a href="${pageContext.request.contextPath}/${next}">下一章</a>
-        </c:if>
+</c:if>
+<c:if test="${previous!=null}">
+    <div class="back up">
+        <a href="${pageContext.request.contextPath}/${previous}">上一章</a>
     </div>
+</c:if>
+<div class="back">
+    <a href="${pageContext.request.contextPath}/${article.bookUrl}">目  录</a>
 </div>
-</dl>
+<c:if test="${next==null}">
+    <div class="back down">
+        <a href="${pageContext.request.contextPath}/${article.bookUrl}">没有了</a>
+    </div>
+</c:if>
+<c:if test="${next!=null}">
+    <div class="back down">
+        <a href="${pageContext.request.contextPath}/${next}">下一章</a>
+    </div>
+</c:if>
+<div id="main">
+    <div id="main-content">
+        <h1>${article.title}</h1>
+        <!-- <p class="nav">书名：<a href="">xxx</a><span class="line"></span>作者：<a href="">xxx</a>
+            <span class="line"></span>书本类别：<a href="">xxx</a><span class="line"></span>更新时间：<a href="">xxx</a></p> -->
+        <div class="content">
+            ${article.content}
+        </div>
+        <div id="btn">
+            <c:if test="${previous==null}">
+                <div class="btn-content">
+                    <a href="${pageContext.request.contextPath}/${article.bookUrl}">没有了</a>
+                </div>
+            </c:if>
+            <c:if test="${previous!=null}">
+                <div class="btn-content">
+                    <a href="${pageContext.request.contextPath}/${previous}">上一章</a>
+                </div>
+            </c:if>
+            <div class="back">
+                <a href="${pageContext.request.contextPath}/${article.bookUrl}">章节目录</a>
+            </div>
+            <c:if test="${next==null}">
+                <div class="btn-content">
+                    <a href="${pageContext.request.contextPath}/${article.bookUrl}">没有了</a>
+                </div>
+            </c:if>
+            <c:if test="${next!=null}">
+                <div class="btn-content">
+                    <a href="${pageContext.request.contextPath}/${next}">下一章</a>
+                </div>
+            </c:if>
+        </div>
+    </div>
 
-
+</div>
 </body>
 </html>
