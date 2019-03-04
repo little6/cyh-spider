@@ -9,13 +9,13 @@
 - :chicken:或者搭建起来自己使用，可以避免看小说时网站弹出的各种小广告:rage:。。。
 ## 效果展示
 - 首页
-[](img/index.jpg)
+![](img/index.jpg)
 - 小说页
-[](img/image1.jpg)
+![](img/image1.jpg)
 - 章节页
-[](img/image2.jpg)
+![](img/image2.jpg)
 - 搜索页
-[](img/image3.jpg)
+![](img/image3.jpg)
 ## 技术栈
 |名称|信息|
 |---|---|
